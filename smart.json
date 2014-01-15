@@ -6,6 +6,7 @@
     "accounts-ui-bootstrap-dropdown": {},
     "jquery-ui": {},
     "jquery-ui-bootstrap": {},
-    "iron-router": {}
+    "iron-router": {},
+    "collection-api": {}
   }
 }
