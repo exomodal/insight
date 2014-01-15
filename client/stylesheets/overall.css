@@ -25,3 +25,72 @@
 :-ms-input-placeholder {
   font-style:italic;
 }
+
+* {
+margin: 0;
+}
+
+  html, body {
+    height: 100%;
+  }
+
+.footer {
+  padding: 20px 0;
+  margin-top: 60px;
+  border-top: 1px solid #bbbbbb;
+}
+
+.footer p {
+  margin-bottom: 0;
+/*  color: black;
+*/}
+
+.footer a {
+/*  color: white;
+*/}
+.footer-links {
+  margin: 10px 0;
+
+}
+
+.footer-links li {
+  display: inline;
+  padding: 0 2px;
+}
+
+.footer-links li:first-child {
+  padding-left: 0;
+}
+
+.footer, .push {
+height: 4em;
+
+}
+
+#wrapper {
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin: 0 auto -63px;
+}
+
+.push {
+    height: 63px;
+}
+
+  /* not required for sticky footer; just pushes hero down a bit */
+.wrapper > .container {
+    padding-top: 60px;
+}
+#main {
+  overflow:auto;
+  padding-bottom:150px; /* this needs to be bigger than footer height*/
+}
+
+.footer {
+  position: relative;
+  margin-top: -150px; /* negative value of footer height */
+  height: 150px;
+  clear:both;
+  padding-top:20px;
+} 
