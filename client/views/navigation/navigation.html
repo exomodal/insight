@@ -26,9 +26,16 @@
                 <li><a href="#">Terminal Liters per truckmove</a></li>
               </ul>
             </li>
-            <li class="{{active}}"><a href="#">Revenues</a></li>
+            <li class="{{active}}"><a href="{{pathFor 'revenues'}}">Revenues</a></li>
             <li class="{{active}}"><a href="{{pathFor 'moves'}}">Moves</a></li>
-            <li class="{{active}}"><a href="{{pathFor 'formsList'}}">Forms</a></li>
+            
+            <li class="{{active}} dropdown">
+              <a href="{{pathFor formsList}}" class="dropdown-toggle" data-toggle="dropdown">Forms <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="{{pathFor 'data-entry'}}">example data-entry 1</a></li>
+                <li><a href="#">example data-entry 2</a></li>
+              </ul>
+            </li>
             {{/if}}
             <li class="{{active}}"><a href="{{pathFor 'about'}}">About</a></li>
            	{{#if isInRole 'Default'}}
