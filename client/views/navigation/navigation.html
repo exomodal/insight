@@ -32,11 +32,11 @@
             {{/if}}
             <li class="{{active}}"><a href="{{pathFor 'about'}}">About</a></li>
            	{{#if isInRole 'Default'}}
-            <li class={{active}}><a href="{{pathFor 'profiel'}}">Profiel</a>
+            <li class={{active}}><a href="{{pathFor 'profilePage'}}">Profile</a>
 			      {{/if}}
             {{#if isInRole 'Admin'}}
-            <li class="{{active}}"><a href="{{pathFor 'profiel'}}">Profiel</a>
-            <li class="{{active}}"><a href="{{pathFor 'adminpanel'}}">Admin Panel</a>
+            <li class="{{active}}"><a href="{{pathFor 'profilePage'}}">Profile</a>
+            <li class="{{active}}"><a href="{{pathFor 'adminPage'}}">Admin</a>
 			      {{/if}}
           </ul>
           <ul class="nav pull-right">

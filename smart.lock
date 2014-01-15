@@ -2,30 +2,14 @@
   "meteor": {},
   "dependencies": {
     "basePackages": {
-      "spin": {
-        "version": "0.2.2"
-      },
-      "accounts-linkedin": {
-        "version": "0.0.5"
-      },
-      "roles": {
-        "version": "1.2.6"
-      },
-      "accounts-ui-bootstrap-dropdown": {
-        "version": "0.6.5.1"
-      },
-      "jquery-ui": {
-        "version": "1.9.2"
-      },
-      "jquery-ui-bootstrap": {
-        "version": "0.1.2"
-      },
-      "iron-router": {
-        "version": "0.6.2"
-      },
-      "collection-api": {
-        "version": "0.1.15"
-      }
+      "spin": {},
+      "accounts-linkedin": {},
+      "roles": {},
+      "accounts-ui-bootstrap-dropdown": {},
+      "jquery-ui": {},
+      "jquery-ui-bootstrap": {},
+      "iron-router": {},
+      "collection-api": {}
     },
     "packages": {
       "spin": {
