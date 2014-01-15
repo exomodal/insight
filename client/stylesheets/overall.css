@@ -1,0 +1,27 @@
+/* CSS declarations go here */
+
+/*
+ * Layout
+ */
+.container {
+  width: 95%;
+}
+
+/*
+ * Input field placeholders
+ */
+::-webkit-input-placeholder {
+  font-style:italic;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+  font-style:italic;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+  font-style:italic;
+}
+
+:-ms-input-placeholder {
+  font-style:italic;
+}

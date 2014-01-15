@@ -1,0 +1,97 @@
+<!--
+This template displays the admin panel where the admin can
+edit the accounts of all users.
+-->
+<template name="adminPage">
+	<div class="adminPage">
+
+		<!--
+		Create the Remove Modal.
+		-->
+		<div id="removeDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="windowTitleLabel" aria-hidden="true">
+			<div class="modal-header">
+				<a href="#" class="close removeCancelButton" data-dismiss="modal">&times;</a>
+				<h4>Verwijderen</h4>
+			</div>
+			<div class="modal-body">
+				<div class="divDialogElements">
+					Weet u zeker dat u deze gebruiker wilt verwijderen?
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a href="#" class="btn removeCancelButton">Annuleren</a>
+				<a href="#" class="btn btn-primary removeOkButton">OK</a>
+			</div>
+		</div>
+
+		<!--
+		Create the page itself.
+		-->
+		<div class="well well-large">
+			<legend>Gebruikers</legend>
+
+			<table class="usersTable" class="table">
+				<thead>
+					<tr>
+						<td>Email adres</td>
+						<td>Naam</td>
+						<td>Wachtwoord</td>
+						<td>Taak</td>
+						<td>Type</td>
+						<td>Geverifieerd</td>
+					</tr>
+					<tr>
+						<td>
+							<input id="emailField" type="text" class="textfield" disabled></input>
+						</td>
+						<td>
+							<input id="nameField" type="text" class="textfield"></input>
+					 	</td>
+					 	<td>
+							<input id="passwordField" type="text" class="textfield"></input>
+				  		</td>
+						<td>
+							<select id="roleField" class="dropdown">
+								<option value=""></option>
+								{{#each role}}
+									<option value="{{this.name}}">{{this.name}}</option>
+								{{/each}}
+							</select>
+				  		</td>
+				  		<td>
+							<input id="typeField" type="text" class="textfield" disabled></input>
+				  		</td>
+				  		<td>
+							<select id="verifiedField" class="dropdown">
+								<option value=""></option>
+								<option value="Ja">Ja</option>
+								<option value="Nee">Nee</option>
+							</select>
+						</td>
+						<td>
+							<button class="btn btn-default btn-xs saveButton">Opslaan</button>
+							<button class="btn btn-default btn-xs cancelButton">Annuleren</button>
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					{{#each user}}
+							<tr>
+							<td>{{getAddress this}}</td>
+							<td>{{getName this}}</td>
+							<td></td>
+							<td>{{this.roles}}</td>
+							<td>{{getType this}}</td>
+							<td>{{getVerified this}}</td>
+							<td>
+								<button class="btn btn-default btn-xs editButton"><i class="icon-edit"></i></button>
+								<button data-toggle="modal" href="#removeDialog" class="btn btn-default btn-xs removeButton"><i class="icon-remove"></i></button>
+							</td>
+						</tr>
+					{{/each}}
+				</tbody>
+			</table>
+		</div>
+
+	</div>
+</template>

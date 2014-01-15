@@ -1,0 +1,67 @@
+<!--
+This template displays the verificating page. When the user did not completed
+its account is need to fill in all additional information.
+-->
+<template name="verificatingPage">
+	<div class="verificatingPage">
+
+		<!--
+		If the user filled all its information he is pending for the verification.
+		-->
+		{{#if isPending}}
+
+			<div class="well well-large">
+				<legend>Verificatie</legend>
+				U heeft uw account ter verificatie aangeboden.</br>
+				Op dit moment is uw account in afwachting van verificatie.
+			</div>
+
+		<!--
+		If the user did not fill all its information he should do it before the account
+		will be verified.
+		-->
+		{{else}}}
+
+			<div class="well well-large">
+				<legend>Gegevens</legend>
+				Vul uw gegevens in om uw account ter verificatie aan te bieden.</br>
+				Zodra alle verplichte velden zijn ingevuld worden uw gegevens geverifieerd.</br>
+				Velden met een (*) zijn verplichte velden.
+
+				<table class="verificatingTable" id="personalTable">
+					<thead>
+						<tr>
+							<th colspan="2" class="heading">Persoonlijke gegevens</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="title">Email adres *</td>
+							<td class="field"><input id="emailField" type="text" class="textfield"></input></td>
+						</tr>
+						<tr>
+							<td class="title">Volledige naam *</td>
+							<td class="field"><input id="nameField" type="text" class="textfield"></input></td>
+						</tr>
+						<tr>
+							<td class="title">Taak *</td>
+							<td class="field">
+								<select id="roleField" class="dropdown">
+									<option value=""></option>
+									{{#each role}}
+										<option value="{{this.name}}">{{this.name}}</option>
+									{{/each}}
+								</select>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<button class="btn btn-default btn-xs saveButton">Opslaan</button>
+				<button class="btn btn-default btn-xs resetButton">Reset</button>
+
+			</div>
+		{{/if}}
+
+	</div>
+</template>

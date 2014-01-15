@@ -1,0 +1,24 @@
+/*****************************************************************************
+ * Configuration
+ *****************************************************************************/
+
+Krijg het configuratie record:
+    curl -H "X-Auth-Token:9900aa" http://localhost:3000/collectionapi/configuration
+
+Stuur een nieuwe configuratie record (de oude wordt automatisch overschreven):
+    curl -H "X-Auth-Token:9900aa" -d '{"roles":[{"name":"Default","allowedlinks":["/","/profiel"]},{"name":"Admin","allowedlinks":["/","/profiel","/adminpanel"]}],"server":{"triggeraddress":"http://localhost:8080/InSight/AnnouncementReader"}}' http://localhost:3000/collectionapi/configuration
+
+/*****************************************************************************
+ * Users
+ *****************************************************************************/
+
+Krijg alle user records:
+    curl -H "X-Auth-Token:9900aa" http://localhost:3000/collectionapi/users
+
+Krijg één individuele record met behulp van het _id:
+    curl -H "X-Auth-Token:9900aa" http://localhost:3000/collectionapi/users/QvFa3n8JxpimjQXsT
+
+Update één individuele record met behulp van het _id:
+    curl -H "X-Auth-Token:9900aa" -d '{"_id":"QvFa3n8JxpimjQXsT",<rest of document>}' http://localhost:3000/collectionapi/users
+
+

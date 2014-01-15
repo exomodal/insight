@@ -1,0 +1,34 @@
+<!--
+This is the header template which will be displayed on top of the page.
+-->
+<template name="header">
+	<header class="navbar">
+		<div class="navbar-inner">
+			<!--
+			Here we define all links.
+			-->
+			<a class="brand" href="/">Home</a>
+
+			<!--
+			Normal specific links.
+			-->
+			{{#if isInRole 'Default'}}
+				<a class="brand" href="/profiel">Profiel</a>
+			{{/if}}
+
+			<!--
+			Admin specific links.
+			-->
+			{{#if isInRole 'Admin'}}
+				<a class="brand" href="/profiel">Profiel</a>
+				<a class="brand" href="/adminpanel">Admin Panel</a>
+			{{/if}}
+
+			<div class="nav-collapse collapse">
+				<ul class="nav pull-right">
+					<li>{{loginButtons}}</li>
+				</ul>
+			</div>
+		</div>
+	</header>
+</template>

@@ -1,0 +1,21 @@
+<!--
+This template displays all errors for the current client.
+-->
+<template name="errors">
+	<div class="errors row-fluid">
+		{{#each error}}
+			{{> error}}
+		{{/each}}
+	</div>
+</template>
+
+<!--
+This template displays one single error.
+It will be used by the 'errors' template above.
+-->
+<template name="error">
+	<div class="alert alert-error">
+		<button type="button" class="close" data-dismiss="alert">&times;</button>
+		{{message}}
+	</div>
+</template>

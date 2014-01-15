@@ -1,0 +1,71 @@
+/* CSS declarations go here */
+
+/*
+ * Home Page
+ */
+.homePage {}
+.homePage .welcome {
+  float:left;
+  width:auto;
+  margin-right:20px;
+  
+}
+.homePage .info {
+  overflow:hidden;
+}
+
+/*
+ * Verificating Page
+ */
+.verificatingPage {}
+.verificatingPage .verificatingTable {
+  margin-bottom:15px;
+  margin-top:15px;
+}
+.verificatingPage .verificatingTable .heading {
+  text-align:left;
+}
+.verificatingPage .verificatingTable .title {
+  width:150px;
+}
+.verificatingPage .verificatingTable .field {
+  width:200px;
+}
+.verificatingPage .verificatingTable .textfield {
+  width:190px;
+}
+.verificatingPage .verificatingTable .dropdown {
+  width:200px;
+}
+
+/*
+ * Admin Page
+ */
+.adminPage {}
+.adminPage .usersTable {
+  width:100%;
+}
+.adminPage .usersTable .textfield {
+  width:auto;
+}
+.adminPage .usersTable .dropdown {
+  width:auto;
+}
+
+/*
+ * Profile Page
+ */
+.profilePage {}
+.profilePage .profileTable {
+  margin-bottom:15px;
+  margin-top:15px;
+}
+.profilePage .profileTable .heading {
+  text-align:left;
+}
+.profilePage .profileTable .title {
+  width:150px;
+}
+.profilePage .profileTable .field {
+  width:200px;
+}

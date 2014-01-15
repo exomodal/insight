@@ -1,0 +1,11 @@
+{
+  "packages": {
+    "spin": {},
+    "accounts-linkedin": {},
+    "roles": {},
+    "accounts-ui-bootstrap-dropdown": {},
+    "jquery-ui": {},
+    "jquery-ui-bootstrap": {},
+    "iron-router": {}
+  }
+}
