@@ -1,24 +1,26 @@
+Development stuffz.
+
 /*****************************************************************************
- * Configuration
+ * Configuration (examples of CLI usage)
  *****************************************************************************/
 
-Krijg het configuratie record:
+Obtain the configuration record:
     curl -H "X-Auth-Token:9900aa" http://localhost:3000/collectionapi/configuration
 
-Stuur een nieuwe configuratie record (de oude wordt automatisch overschreven):
+Send a new configuration record (old one is automatically overwritten):
     curl -H "X-Auth-Token:9900aa" -d '{"roles":[{"name":"Default","allowedlinks":["/","/moves","/revenues","/forms","/forms/data-entry","/profile"]},{"name":"Admin","allowedlinks":["/","/moves","/revenues","/forms","/forms/data-entry","/profile","/adminpanel"]}],"server":{"triggeraddress":"http://localhost:8080/InSight/AnnouncementReader"}}' http://localhost:3000/collectionapi/configuration
 
 /*****************************************************************************
- * Users
+ * Users (examples of CLI usage)
  *****************************************************************************/
 
-Krijg alle user records:
+Obtain all user records:
     curl -H "X-Auth-Token:9900aa" http://localhost:3000/collectionapi/users
 
-Krijg één individuele record met behulp van het _id:
+Obtain one individual record with the _id:
     curl -H "X-Auth-Token:9900aa" http://localhost:3000/collectionapi/users/QvFa3n8JxpimjQXsT
 
-Update één individuele record met behulp van het _id:
+Update one individual record woth the _id:
     curl -H "X-Auth-Token:9900aa" -d '{"_id":"QvFa3n8JxpimjQXsT",<rest of document>}' http://localhost:3000/collectionapi/users
 
 
