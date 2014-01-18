@@ -7,6 +7,7 @@
     "jquery-ui": {},
     "jquery-ui-bootstrap": {},
     "iron-router": {},
-    "collection-api": {}
+    "collection-api": {},
+    "font-awesome": {}
   }
 }

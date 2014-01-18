@@ -9,7 +9,8 @@
       "jquery-ui": {},
       "jquery-ui-bootstrap": {},
       "iron-router": {},
-      "collection-api": {}
+      "collection-api": {},
+      "font-awesome": {}
     },
     "packages": {
       "spin": {
@@ -51,6 +52,11 @@
         "git": "https://github.com/crazytoad/meteor-collectionapi.git",
         "tag": "v0.1.15",
         "commit": "b62c51f387287726cf3b64077f7bc69604ec2f5e"
+      },
+      "font-awesome": {
+        "git": "https://github.com/nate-strauser/meteor-font-awesome.git",
+        "tag": "v4.0.3",
+        "commit": "61e9361384347547ae144f8228faa4deffda23db"
       },
       "linkedin": {
         "git": "https://github.com/yefim/meteor-linkedin.git",
