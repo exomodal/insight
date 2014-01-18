@@ -1,0 +1,14 @@
+<template name="layout">
+  <div class="container">
+    <header>
+      <div class id="naviContainer">
+        {{>navigationbar}}
+        {{>errors}}
+      </div>
+      </header>
+      <div id="main" class="row-fluid">
+        {{yield}}
+      </div>
+  </div>
+  {{>footer}}
+</template>
