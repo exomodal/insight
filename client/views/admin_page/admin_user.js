@@ -8,7 +8,7 @@ var ADMIN_EDIT_ID;
 /*
  * Get all roles from the configuration.
  */
-Template.adminPage.role = function () {
+Template.adminUser.role = function () {
   var config = configuration.findOne();
   if (config !== undefined && config.roles !== undefined)
     return config.roles;
@@ -18,23 +18,23 @@ Template.adminPage.role = function () {
 /*
  * Get all users from the collection.
  */
-Template.adminPage.user = function() {
+Template.adminUser.user = function() {
 	return Meteor.users.find();
 }
 
 /*
  * All other get functions for the template.
  */
-Template.adminPage.getName = function(user) {
+Template.adminUser.getName = function(user) {
   return getName(user);
 }
-Template.adminPage.getAddress = function(user) {
+Template.adminUser.getAddress = function(user) {
 	return getAddress(user);
 }
-Template.adminPage.getType = function(user) {
+Template.adminUser.getType = function(user) {
 	return getType(user);
 }
-Template.adminPage.getVerified = function(user) {
+Template.adminUser.getVerified = function(user) {
 	return getVerified(user);
 }
 
@@ -117,7 +117,7 @@ function resetInputFields() {
  * Event functions
  *****************************************************************************/
 
-Template.adminPage.events({
+Template.adminUser.events({
   /*
    * Executed when clicking the SAVE button
    */
@@ -186,7 +186,7 @@ Template.adminPage.events({
     if (passwordField !== null && passwordField !== undefined) {
       if (getType(this) === "Normal") {
         passwordField.disabled = false;
-        passwordField.placeholder = 'Ongewijzigd';
+        passwordField.placeholder = 'Unmodified';
       } else {
         passwordField.disabled = true;
         passwordField.placeholder = '';
@@ -241,7 +241,7 @@ Template.adminPage.events({
 /**
  * Template rendering function
  */
-Template.adminPage.rendered=function() {
+Template.adminUser.rendered=function() {
   // Initialize the input fields
   resetInputFields();
 }

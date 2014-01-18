@@ -16,7 +16,7 @@
             <li class="{{active}}"><a href="{{pathFor 'revenues'}}"><i class="fa fa-eur"></i> Revenues</a></li>
              <li class="{{active}}"><a href="{{pathFor 'moves'}}"><i class="fa fa-truck"></i> Moves</a></li>
             <li class="{{active}} dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tachometer"></i> Performance <b class="caret"></b></a>
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tachometer"></i> Performance<b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="#">Moves per manhour</a></li>
                 <li><a href="#">KwH Factor</a></li>
@@ -42,7 +42,13 @@
 			      {{/if}}
             {{#if isInRole 'Admin'}}
             <li class="{{active}}"><a href="{{pathFor 'profilePage'}}"><i class="fa fa-user"></i> Profile</a>
-            <li class="{{active}}"><a href="{{pathFor 'adminPage'}}"><i class="fa fa-wrench"></i> Admin</a>
+            <li class="{{active}} dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-wrench"></i> Admin<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="{{pathFor 'adminUser'}}">Users</a></li>
+                <li><a href="#">Configuration</a></li>
+              </ul>
+            </li>
 			      {{/if}}
           </ul>
           <ul class="nav pull-right">
