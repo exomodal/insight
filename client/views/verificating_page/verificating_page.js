@@ -157,7 +157,7 @@ Template.verificatingPage.events({
 
 	    // Check if all fields are filled
 	    if (emailVal === "" || nameVal === "" || roleVal === "") {
-	    	throwError("Alle verplichte velden moeten ingevuld worden.");
+	    	throwError("All required fields have to be filled in.");
 	    } else {
 	    	Meteor.call('updateUser', loggedInUser._id, emailVal, nameVal, roleVal, false, function (error, result) {
 			   	if (error) {

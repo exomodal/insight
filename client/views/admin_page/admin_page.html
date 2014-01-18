@@ -12,15 +12,15 @@ edit the accounts of all users.
 		<div id="removeDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="windowTitleLabel" aria-hidden="true">
 			<div class="modal-header">
 				<a href="#" class="close removeCancelButton" data-dismiss="modal">&times;</a>
-				<h4>Verwijderen</h4>
+				<h4>Delete</h4>
 			</div>
 			<div class="modal-body">
 				<div class="divDialogElements">
-					Weet u zeker dat u deze gebruiker wilt verwijderen?
+					Are you sure you want to remove this user?
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a href="#" class="btn removeCancelButton">Annuleren</a>
+				<a href="#" class="btn removeCancelButton">Cancel</a>
 				<a href="#" class="btn btn-primary removeOkButton">OK</a>
 			</div>
 		</div>
@@ -29,17 +29,17 @@ edit the accounts of all users.
 		Create the page itself.
 		-->
 		<div class="well well-large">
-			<legend>Gebruikers</legend>
+			<legend>Users</legend>
 
 			<table class="usersTable" class="table">
 				<thead>
 					<tr>
-						<td>Email adres</td>
-						<td>Naam</td>
-						<td>Wachtwoord</td>
-						<td>Taak</td>
+						<td>Emailadres</td>
+						<td>Full Name</td>
+						<td>Password</td>
+						<td>Role</td>
 						<td>Type</td>
-						<td>Geverifieerd</td>
+						<td>Verified</td>
 					</tr>
 					<tr>
 						<td>
@@ -65,13 +65,13 @@ edit the accounts of all users.
 				  		<td>
 							<select id="verifiedField" class="dropdown">
 								<option value=""></option>
-								<option value="Ja">Ja</option>
-								<option value="Nee">Nee</option>
+								<option value="Yes">Yes</option>
+								<option value="No">No</option>
 							</select>
 						</td>
 						<td>
-							<button class="btn btn-default btn-xs saveButton">Opslaan</button>
-							<button class="btn btn-default btn-xs cancelButton">Annuleren</button>
+							<button class="btn btn-default btn-xs saveButton">Save</button>
+							<button class="btn btn-default btn-xs cancelButton">Cancel</button>
 						</td>
 					</tr>
 				</thead>

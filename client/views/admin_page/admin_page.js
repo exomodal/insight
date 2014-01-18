@@ -82,12 +82,12 @@ function getAddress(user) {
 function getVerified(user) {
 	if (user.profile !== undefined && user.profile.verified !== undefined) {
     if (user.profile.verified == true) {
-      return "Ja";
+      return "Yes";
     } else {
-      return "Nee";
+      return "No";
     }
   }
-	return "Nee";
+	return "No";
 }
 
 /*
@@ -123,7 +123,7 @@ Template.adminPage.events({
    */
   'click .saveButton':function(e) {
     // Get all input field values
-    if (document.getElementById("verifiedField").value === "Ja") {
+    if (document.getElementById("verifiedField").value === "Yes") {
    		var verifiedVal = true;
    	} else {
    		var verifiedVal = false;
