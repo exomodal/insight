@@ -1,0 +1,1 @@
+TerminalManager = new Meteor.Collection("terminalmanager");

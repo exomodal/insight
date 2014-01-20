@@ -20,8 +20,6 @@ Template.verificating.isPending = function() {
 	// Get the logged in user
 	var loggedInUser = Meteor.user();
 
-	console.log(loggedInUser);
-
 	// Verify whether all fields are filled
 	// If not all fields are filled the account is not pending verification
 	if (getAddress(loggedInUser) === "") return false;

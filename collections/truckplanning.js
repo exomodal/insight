@@ -1,0 +1,1 @@
+TruckPlanning = new Meteor.Collection("truckplanning");
