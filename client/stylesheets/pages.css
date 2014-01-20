@@ -1,20 +1,6 @@
 /* CSS declarations go here */
 
 /*
- * Home Page
- */
-.homePage {}
-.homePage .welcome {
-  float:left;
-  width:auto;
-  margin-right:20px;
-  
-}
-.homePage .info {
-  overflow:hidden;
-}
-
-/*
  * Verificating Page
  */
 .verificatingPage {}

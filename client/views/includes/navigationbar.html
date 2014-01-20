@@ -8,48 +8,51 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </a>
-        <a class="brand" href="{{pathFor 'homePage'}}"><img src="/ctt-transparant.png"/></a>
+        <a class="brand" href="{{pathFor 'home'}}"><img src="/ctt-transparant.png"/></a>
         <div class="nav-collapse">
           <ul class="nav">
-            <li class="{{active}}"><a href="{{pathFor 'homePage'}}"><i class="fa fa-home"></i> Home</a></li>
+
+            <li class="{{active}}"><a href="{{pathFor 'home'}}"><i class="fa fa-home"></i> Home</a></li>
+
             {{#if currentUser}}
-            <li class="{{active}}"><a href="{{pathFor 'revenues'}}"><i class="fa fa-eur"></i> Revenues</a></li>
-             <li class="{{active}}"><a href="{{pathFor 'moves'}}"><i class="fa fa-truck"></i> Moves</a></li>
-            <li class="{{active}} dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tachometer"></i> Performance<b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Moves per manhour</a></li>
-                <li><a href="#">KwH Factor</a></li>
-                <li><a href="#">Synchromodal Factor</a></li>
-                <li><a href="#">Diesel Factor</a></li>
-                <li><a href="#">Kg Co2_eq per move</a></li>
-                <li><a href="#">Kg Co2_eq Terminal operation</a></li>
-                <li><a href="#">KwH per Move</a></li>
-                <li><a href="#">Terminal Liters per truckmove</a></li>
-              </ul>
-            </li>            
-            <li class="{{active}} dropdown">
-              <a href="{{pathFor formsList}}" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-list-alt"></i> Forms <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="{{pathFor 'data-entry'}}">example data-entry 1</a></li>
-                <li><a href="#">example data-entry 2</a></li>
-              </ul>
-            </li>
+              <li class="{{active}}"><a href="{{pathFor 'revenues'}}"><i class="fa fa-eur"></i> Revenues</a></li>
+               <li class="{{active}}"><a href="{{pathFor 'moves'}}"><i class="fa fa-truck"></i> Moves</a></li>
+              <li class="{{active}} dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tachometer"></i> Performance<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Moves per manhour</a></li>
+                  <li><a href="#">KwH Factor</a></li>
+                  <li><a href="#">Synchromodal Factor</a></li>
+                  <li><a href="#">Diesel Factor</a></li>
+                  <li><a href="#">Kg Co2_eq per move</a></li>
+                  <li><a href="#">Kg Co2_eq Terminal operation</a></li>
+                  <li><a href="#">KwH per Move</a></li>
+                  <li><a href="#">Terminal Liters per truckmove</a></li>
+                </ul>
+              </li>            
+              <li class="{{active}} dropdown">
+                <a href="{{pathFor 'formsList'}}" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-list-alt"></i> Forms <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  {{#each form}}
+                    <li><a href="{{pathFor 'formsList'}}/{{this.id}}">{{this.label}}</a></li>
+                  {{/each}}
+                </ul>
+              </li>
+              <li class={{active}}><a href="{{pathFor 'profile'}}"><i class="fa fa-user"></i> Profile</a>
+              {{#if isInRole 'Admin'}}
+                <li class="{{active}} dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-wrench"></i> Admin<b class="caret"></b></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="{{pathFor 'adminUser'}}">Users</a></li>
+                    <li><a href="{{pathFor 'adminConfig'}}">Configuration</a></li>
+                  </ul>
+                </li>
+              {{/if}}
+
             {{/if}}
+
             <li class="{{active}}"><a href="{{pathFor 'about'}}"><i class="fa fa-question"></i> About</a></li>
-           	{{#if isInRole 'Default'}}
-            <li class={{active}}><a href="{{pathFor 'profilePage'}}"><i class="fa fa-user"></i> Profile</a>
-			      {{/if}}
-            {{#if isInRole 'Admin'}}
-            <li class="{{active}}"><a href="{{pathFor 'profilePage'}}"><i class="fa fa-user"></i> Profile</a>
-            <li class="{{active}} dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-wrench"></i> Admin<b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="{{pathFor 'adminUser'}}">Users</a></li>
-                <li><a href="{{pathFor 'adminConfig'}}">Configuration</a></li>
-              </ul>
-            </li>
-			      {{/if}}
+            
           </ul>
           <ul class="nav pull-right">
             <li class="{{active}}">{{loginButtons}}</li>

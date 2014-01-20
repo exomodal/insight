@@ -5,7 +5,7 @@
 /*
  * Get all roles from the configuration.
  */
-Template.verificatingPage.role = function () {
+Template.verificating.role = function () {
 	var config = configuration.findOne();
 	if (config !== undefined && config.roles !== undefined)
 		return config.roles;
@@ -16,9 +16,11 @@ Template.verificatingPage.role = function () {
  * Check whether the account is pending verification.
  * Returns true when pending else returns false.
  */
-Template.verificatingPage.isPending = function() {
+Template.verificating.isPending = function() {
 	// Get the logged in user
 	var loggedInUser = Meteor.user();
+
+	console.log(loggedInUser);
 
 	// Verify whether all fields are filled
 	// If not all fields are filled the account is not pending verification
@@ -134,7 +136,7 @@ function resetInputFields() {
  * Event functions
  *****************************************************************************/
 
-Template.verificatingPage.events({
+Template.verificating.events({
 	/*
 	 * Executed when clicking the Reset button
 	 */
@@ -178,7 +180,7 @@ Template.verificatingPage.events({
 /**
  * Template rendering function
  */
-Template.verificatingPage.rendered=function() {
+Template.verificating.rendered=function() {
 	// Initialize the input fields
 	resetInputFields();
 }

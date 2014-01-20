@@ -63,29 +63,6 @@ curl -H "X-Auth-Token:9900aa" -d '{"roles":[{"name":"management","allowedlinks":
 			"type":"number",
 			"label":"EUR"}
 		]}
-	]},
-	{"id":3,
-	"name":"terminalmanager",
-	"label":"Terminal Manager",
-	"fields":[
-		{"label":"Barge Moves",
-		"inputs":[
-			{"name":"bargemovesin",
-			"type":"number",
-			"label":"In"},
-			{"name":"bargemovesout",
-			"type":"number",
-			"label":"Out"}
-		]},
-		{"label":"Barge TEU",
-		"inputs":[
-			{"name":"bargeteusin",
-			"type":"number",
-			"label":"In"},
-			{"name":"bargeteusout",
-			"type":"number",
-			"label":"Out"}
-		]}
 	]}
 ]
 		

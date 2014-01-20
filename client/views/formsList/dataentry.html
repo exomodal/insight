@@ -1,12 +1,46 @@
-<template name='data-entry'>
+<template name='dataentry'>
 
 	<div class='wrapper row-fluid'>
         <div class='container'>
 
+            {{setForm}}
 
             <form class='form-horizontal'>
 
                 <fieldset>
+
+                    
+                    <legend>{{formlabel}}</legend>
+
+                    {{#each formfields}}
+                        <div class='control-group'>
+                            <label class='control-label'>{{this.label}}:</label>
+                            <div class='controls'>
+
+                                {{#each this.inputs}}
+                                    {{#if isEqual this.type "number"}}
+                                        <div class='input-prepend'>
+                                            <span class='add-on'>{{this.label}}</span>
+                                            <input type='number' id='{{this.name}}' value='{{this.default}}'>
+                                        </div>
+                                    {{/if}}
+                                    {{#if isEqual this.type "dropdown"}}
+                                        <select id='{{this.name}}'>
+                                            <option value=''>{{this.default}}</option>
+                                            {{#each this.values}}
+                                                <option value='{{this}}'>{{this}}</option>
+                                            {{/each}}
+                                        </select>
+                                    {{/if}}
+                                    {{#if isEqual this.type "text"}}
+                                        TEXT FIELD</br>
+                                    {{/if}}
+                                {{/each}}
+
+                            </div>
+                        </div>
+
+                    {{/each}}
 
                     <legend>Location and period</legend>
 

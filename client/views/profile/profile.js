@@ -5,7 +5,7 @@
 /*
  * This function returns the email address of the user.
  */
-Template.profilePage.email = function() {
+Template.profile.email = function() {
 	// Get the logged in user
   var loggedInUser = Meteor.user();
   if (loggedInUser && loggedInUser.profile !== undefined && loggedInUser.profile.email !== undefined) {
@@ -17,7 +17,7 @@ Template.profilePage.email = function() {
 /*
  * This function returns the name of the user.
  */
-Template.profilePage.fullname = function() {
+Template.profile.fullname = function() {
 	// Get the logged in user
   var loggedInUser = Meteor.user();
   if (loggedInUser && loggedInUser.profile !== undefined && loggedInUser.profile.name !== undefined) {
@@ -29,7 +29,7 @@ Template.profilePage.fullname = function() {
 /*
  * This function returns the role of the user.
  */
-Template.profilePage.role = function() {
+Template.profile.role = function() {
 	// Get the logged in user
   var loggedInUser = Meteor.user();
   if (loggedInUser && loggedInUser.roles !== undefined && loggedInUser.roles[0] !== undefined) {

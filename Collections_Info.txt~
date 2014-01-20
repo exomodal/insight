@@ -15,7 +15,7 @@ Collecties en velden:
                 type: String;          (number, dropdown, text)
                 label: String;         (only for type=number)
                 default: String;
-                values: String Array;  (Only for type=dropdown)
+                values: String Array;
 
 
 - Meteor.users (http://localhost:3000/collectionapi/users)
