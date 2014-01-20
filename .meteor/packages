@@ -8,9 +8,6 @@ preserve-inputs
 bootstrap
 spin
 accounts-password
-accounts-facebook
-accounts-linkedin
-accounts-twitter
 roles
 accounts-ui-bootstrap-dropdown
 collection-api
