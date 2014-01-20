@@ -11,10 +11,9 @@ its account is need to fill in all additional information.
 		-->
 		{{#if isPending}}
 
-			<div class="well well-large">
-				<legend>Verification</legend>
-				Your account had been offered to the administrators for verification.</br>
-				Please be patient until this verification has been done.
+			<div class="hero-unit">
+        <h1>Verification</h1>
+        <p>Your account had been offered to the administrators for verification. Please be patient until this verification has been done.</p>
 			</div>
 
 		<!--
@@ -23,47 +22,46 @@ its account is need to fill in all additional information.
 		-->
 		{{else}}}
 
-			<div class="well well-large">
-				<legend>User Account</legend>
-        		Please fill in all the fields to be able to offer your account</br>
-				for verification to the administrators.</br>
-				As soon as all obligatory fields have been filled the account can be verified.</br>
-				Fields marked with a (*) are obligatory.
+			<div class="hero-unit">
+				<h1>Verification</h1>
+        <p>Please fill in all the fields to be able to offer your account for verification to the administrators. As soon as all obligatory fields have been filled the account can be verified.</p>
+        <p>Fields marked with a (*) are required.</p>
+        
+        <h3>User details</h3>
+        
+        <div class='control-group'>
+          <label for='emailField' class='control-label'>Emailadres *</label>
+          <div class='controls'>
+            <input id="emailField" type="text" class="textfield"></input>
+          </div>
+        </div>
+          
+        <div class='control-group'>
+          <label for='nameField' class='control-label'>Full name *</label>
+          <div class='controls'>
+            <input id="nameField" type="text" class="textfield">
+          </div>
+        </div>
 
-				<table class="verificatingTable" id="personalTable">
-					<thead>
-						<tr>
-							<th colspan="2" class="heading">User details</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td class="title">Emailadres *</td>
-							<td class="field"><input id="emailField" type="text" class="textfield"></input></td>
-						</tr>
-						<tr>
-							<td class="title">Full name *</td>
-							<td class="field"><input id="nameField" type="text" class="textfield"></input></td>
-						</tr>
-						<tr>
-							<td class="title">Role *</td>
-							<td class="field">
-								<select id="roleField" class="dropdown">
-									<option value=""></option>
+        <div class='control-group'>
+          <label class='control-label' for='roleField'>Role *</label>
+          <div class='controls'>
+            <select id='roleField' class="dropdown">
+              <option value=""></option>
 									{{#each role}}
 										<option value="{{this.name}}">{{this.name}}</option>
 									{{/each}}
-								</select>
-							</td>
-						</tr>
-					</tbody>
-				</table>
+            </select>
+          </div>
+        </div>
 
-				<button class="btn btn-default btn-xs saveButton">Save</button>
-				<button class="btn btn-default btn-xs resetButton">Reset</button>
+				<button class="btn btn-info btn-lg saveButton">Save</button>
+				<button class="btn btn-danger btn-lg resetButton">Reset</button>
 
 			</div>
+        
 		{{/if}}
+        
     </div>
 	</div>
 </template>

@@ -1,6 +1,6 @@
 <template name="navigationbar">
   <!-- Navigation bar specifics -->
-  <div class="navbar navbar-fixed-top">
+  <div class="navbar navbar-static-top">
     <div class="navbar-inner">
       <div class="container">
         <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -52,12 +52,10 @@
             {{/if}}
 
             <li class="{{active}}"><a href="{{pathFor 'about'}}"><i class="fa fa-question"></i> About</a></li>
-            
-          </ul>
-          <ul class="nav pull-right">
             <li class="{{active}}">{{loginButtons}}</li>
           </ul>
-        </div><!-- /.nav-collapse -->
+
+        </div><!-- /.nav-collapse -->    
       </div><!-- /.container -->
     </div><!-- /.navbar-inner -->
   </div><!-- /.navbar -->
