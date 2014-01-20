@@ -3,7 +3,6 @@
   "dependencies": {
     "basePackages": {
       "spin": {},
-      "accounts-linkedin": {},
       "roles": {},
       "accounts-ui-bootstrap-dropdown": {},
       "jquery-ui": {},
@@ -17,11 +16,6 @@
         "git": "https://github.com/SachaG/meteor-spin.git",
         "tag": "v0.2.2",
         "commit": "3f655f0016228e4195acc784c45d3e3a247dc39f"
-      },
-      "accounts-linkedin": {
-        "git": "https://github.com/yefim/meteor-accounts-linkedin.git",
-        "tag": "v0.0.5",
-        "commit": "0ccf12b93f5cd6f487caa68a12a640099e358ffd"
       },
       "roles": {
         "git": "https://github.com/alanning/meteor-roles.git",
@@ -57,11 +51,6 @@
         "git": "https://github.com/nate-strauser/meteor-font-awesome.git",
         "tag": "v4.0.3",
         "commit": "61e9361384347547ae144f8228faa4deffda23db"
-      },
-      "linkedin": {
-        "git": "https://github.com/yefim/meteor-linkedin.git",
-        "tag": "v0.0.2",
-        "commit": "c3bac682ea0edd19e58b9172e708f91616888ba0"
       }
     }
   }
