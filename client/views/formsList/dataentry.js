@@ -66,7 +66,7 @@ Template.dataentry.isEqual = function (a, b) {
  */
 function getForm() {
   	// Get the configuration
-  	var config = configuration.findOne();
+  	var config = Configuration.findOne();
   	if (config !== undefined && config.forms !== undefined) {
 
   		// Parse each form to find the correct one
@@ -80,6 +80,46 @@ function getForm() {
   	return undefined;
 }
 
+/*****************************************************************************
+ * Event functions
+ *****************************************************************************/
+
+Template.dataentry.events({
+  /*
+   * Executed when clicking the Submit button
+   */
+  'click .submit':function(e) {
+  	var tags = new Array();
+  	var values = new Array();
+  	var form = getForm();
+
+  	// Get the field tags
+  	for(var i=0;i<form.fields.length;i++) {
+  		for(var j=0;j<form.fields[i].inputs.length;j++) {
+  			tags.push(form.fields[i].inputs[j].name);
+  		}
+  	}
+  	// Get the field values
+  	for(var i=0;i<tags.length;i++) {
+  		values.push(document.getElementById(tags[i]).value);
+  	}
+  	console.log(tags);
+  	console.log(values);
+
+  	Meteor.call('dynamicinsert', form.name, tags, values, function (error, result) {
+      	// If error
+      	if (error) {
+        	throwError(error.reason);
+        }
+   	});
+
+    // Reset edit_id and clear input fields
+    //resetInputFields();
+
+    // Do not submit
+    return false;
+  }
+});
 
 /*****************************************************************************
  * Rendered function

@@ -7,7 +7,7 @@
  */
 Template.navigationbar.form = function() {
 	// Get the configuration data from the collection
-	var config = configuration.findOne();
+	var config = Configuration.findOne();
 
 	// Check if we got some configurations for the forms
 	if (config !== undefined && config.forms !== undefined) {

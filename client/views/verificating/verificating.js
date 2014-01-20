@@ -6,7 +6,7 @@
  * Get all roles from the configuration.
  */
 Template.verificating.role = function () {
-	var config = configuration.findOne();
+	var config = Configuration.findOne();
 	if (config !== undefined && config.roles !== undefined)
 		return config.roles;
 	return undefined;

@@ -1,1 +1,1 @@
-configuration = new Meteor.Collection("Configuration");
+Configuration = new Meteor.Collection("configuration");

@@ -1,0 +1,1 @@
+Customerservice = new Meteor.Collection("customerservice");

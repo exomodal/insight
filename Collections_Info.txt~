@@ -4,6 +4,7 @@ Collecties en velden:
     - roles: Object Array
         - name: String;
         - allowedlinks: String Array;
+	- forms: Strionga
     - forms: Object Array
         - id: integer;
         - name: String;                (collection name)
@@ -15,7 +16,7 @@ Collecties en velden:
                 type: String;          (number, dropdown, text)
                 label: String;         (only for type=number)
                 default: String;
-                values: String Array;
+                values: String Array;  (Only for type=dropdown)
 
 
 - Meteor.users (http://localhost:3000/collectionapi/users)

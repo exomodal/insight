@@ -1,0 +1,1 @@
+Management = new Meteor.Collection("management");

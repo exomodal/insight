@@ -14,13 +14,13 @@ if (Meteor.isServer) {
     });
 
     // Add the collection Configuration to the API path
-    collectionApi.addCollection(configuration, 'configuration', {
+    collectionApi.addCollection(Configuration, 'configuration', {
       authToken: undefined,
       methods: ['POST','GET','PUT','DELETE'],
       before: {
         POST: function(obj) {
           console.log('INSERTION INTO Configuration');
-          configuration.remove({});
+          Configuration.remove({});
           // Return true to insert the complete batch
           return true;
         },

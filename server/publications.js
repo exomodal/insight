@@ -1,5 +1,9 @@
 Meteor.publish('configuration', function (){ 
-    return configuration.find();
+    return Configuration.find();
+});
+
+Meteor.publish('management', function (){ 
+    return Management.find();
 });
 
 Meteor.publish('users', function (user){
