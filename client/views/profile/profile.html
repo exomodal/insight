@@ -1,33 +1,25 @@
 <template name="profile">
 	<div class="wrapper profilePage">
-    <div class="container">
-
-		<div class="well well-large">
-			<legend>Profile</legend>
-
-			<table class="profileTable" id="profile">
-				<thead>
-					<tr>
-						<th colspan="2" class="heading">User Account</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td class="title">Emailadres</td>
-						<td class="field">{{email}}</td>
-					</tr>
-					<tr>
-						<td class="title">Full name</td>
-						<td class="field">{{fullname}}</td>
-					</tr>
-					<tr>
-						<td class="title">Role</td>
-						<td class="field">{{role}}</td>
-					</tr>
-				</tbody>
-			</table>
-
-		</div>
+    <div class="container">    
+      <div class="hero-unit">
+        <h1>User details</h1>
+        <table class="profileTable" id="profile">
+			    <tbody>
+					    <tr>
+                <td class="title" style="">Emailadres:</td>
+						    <td class="field" style="font-size:70%">{{email}}</td>
+					    </tr>
+					    <tr>
+                <td class="title">Full name:</td>
+						    <td class="field" style="font-size:70%">{{fullname}}</td>
+					    </tr>
+					    <tr>
+                <td class="title">Role:</td>
+						    <td class="field" style="font-size:70%">{{role}}</td>
+					    </tr>
+				    </tbody>
+			    </table>
+		  </div>
     </div>
 	</div>
 </template>
