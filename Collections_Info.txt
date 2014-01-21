@@ -4,6 +4,7 @@ Collecties en velden:
     - roles: Object Array
         - name: String;
         - location: String;           (optional: only if role is bound to specific location)
+        - forms: integer Array;
         - allowedlinks: String Array;
     - forms: Object Array
         - id: integer;
