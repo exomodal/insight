@@ -31,67 +31,55 @@ edit the accounts of all users.
 		<div class="well well-large">
 			<legend>Users</legend>
 
-			<table class="usersTable" class="table">
-				<thead>
-					<tr>
-						<td>Emailadres</td>
-						<td>Full Name</td>
-						<td>Password</td>
-						<td>Role</td>
-						<td>Type</td>
-						<td>Verified</td>
-					</tr>
-					<tr>
-						<td>
-							<input id="emailField" type="text" class="textfield" disabled></input>
-						</td>
-						<td>
-							<input id="nameField" type="text" class="textfield"></input>
-					 	</td>
-					 	<td>
-							<input id="passwordField" type="text" class="textfield"></input>
-				  		</td>
-						<td>
-							<select id="roleField" class="dropdown">
-								<option value=""></option>
+			<div class="table">
+			    <div class="row header">
+			       	<div class="cell"><span>Emailadres</span></div>
+			       	<div class="cell"><span>Full Name</span></div>
+			       	<div class="cell"><span>Password</span></div>
+			       	<div class="cell"><span>Role</span></div>
+			       	<div class="cell"><span>Verified</span></div>
+			       	<div class="cell"></div>
+			    </div>
+			    <div class="row input">
+			       	<div class="cell"><input id="emailField" type="text" class="textfield" disabled></div>
+			       	<div class="cell"><input id="nameField" type="text" class="textfield"></div>
+			       	<div class="cell"><input id="passwordField" type="text" class="textfield"></div>
+			       	<div class="cell">
+			       		<select id="roleField" class="dropdown">
+							<option value=""></option>
 								{{#each role}}
 									<option value="{{this.name}}">{{this.name}}</option>
 								{{/each}}
-							</select>
-				  		</td>
-				  		<td>
-							<input id="typeField" type="text" class="textfield" disabled></input>
-				  		</td>
-				  		<td>
-							<select id="verifiedField" class="dropdown">
-								<option value=""></option>
-								<option value="Yes">Yes</option>
-								<option value="No">No</option>
-							</select>
-						</td>
-						<td>
-							<button class="btn btn-default btn-xs saveButton">Save</button>
-							<button class="btn btn-default btn-xs cancelButton">Cancel</button>
-						</td>
-					</tr>
-				</thead>
-				<tbody>
-					{{#each user}}
-							<tr>
-							<td>{{getAddress this}}</td>
-							<td>{{getName this}}</td>
-							<td></td>
-							<td>{{this.roles}}</td>
-							<td>{{getType this}}</td>
-							<td>{{getVerified this}}</td>
-							<td>
-								<button class="btn btn-default btn-xs editButton"><i class="icon-edit"></i></button>
-								<button data-toggle="modal" href="#removeDialog" class="btn btn-default btn-xs removeButton"><i class="icon-remove"></i></button>
-							</td>
-						</tr>
-					{{/each}}
-				</tbody>
-			</table>
+						</select>
+					</div>
+			       	<div class="cell">
+			       		<select id="verifiedField" class="dropdown">
+							<option value=""></option>
+							<option value="Yes">Yes</option>
+							<option value="No">No</option>
+						</select>
+					</div>
+					<div class="cell">
+						<button class="btn btn-default btn-xs saveButton">Save</button>
+						<button class="btn btn-default btn-xs cancelButton">Cancel</button>
+					</div>
+			    </div>
+
+			    {{#each user}}
+			    	<div class="row body">
+			       		<div class="cell"><span>{{getAddress this}}</span></div>
+				       	<div class="cell"><span>{{getName this}}</span></div>
+				       	<div class="cell"><span>&nbsp;</span></div>
+				       	<div class="cell"><span>{{this.roles}}</span></div>
+				       	<div class="cell"><span>{{getVerified this}}</span></div>
+				       	<div class="cell">
+				       		<button class="btn btn-default btn-xs editButton"><i class="icon-edit"></i></button>
+							<button data-toggle="modal" href="#removeDialog" class="btn btn-default btn-xs removeButton"><i class="icon-remove"></i></button>
+				       	</div>
+			    	</div>
+				{{/each}}
+			</div>
+
 		</div>
   </div>
 	</div>
