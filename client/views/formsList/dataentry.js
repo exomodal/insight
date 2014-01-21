@@ -54,9 +54,19 @@ Template.dataentry.formfields = function () {
 Template.dataentry.location = function () {
   var loggedInUser = Meteor.user();
 
-  if (loggedInUser && loggedInUser.profile !== undefined && loggedInUser.profile.location !== undefined)
-    return loggedInUser.profile.location;
-  return -1;
+  if (loggedInUser && loggedInUser.roles !== undefined && loggedInUser.roles[0] !== undefined) {
+    var config = Configuration.findOne();
+    
+    if (config !== undefined && config.roles !== undefined) {
+      for (var i=0;i<config.roles.length;i++) {
+        if (config.roles[i].name === loggedInUser.roles[0] && config.roles[i].location !== undefined) {
+          return config.roles[i].location;
+        }
+      }
+
+    }
+  }
+  return "";
 }
 
 /*
