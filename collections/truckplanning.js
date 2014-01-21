@@ -1,1 +1,1 @@
-TruckPlanning = new Meteor.Collection("truckplanning");
+Truckplanning = new Meteor.Collection("truckplanning");

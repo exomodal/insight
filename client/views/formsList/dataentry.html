@@ -12,6 +12,45 @@
                     
                     <legend>{{formlabel}}</legend>
 
+                    <input type='hidden' id='static_location' value='{{location}}'>
+                    <div class='control-group'>
+                        <label class='control-label'>Year</label>
+                        <div class='controls'>
+                            <select id='static_year'>
+                                <option value=''>--Select Year--</option>
+                                <option value='2008'>2008</option>
+                                <option value='2009'>2009</option>
+                                <option value='2010'>2010</option>
+                                <option value='2011'>2011</option>
+                                <option value='2012'>2012</option>
+                                <option value='2013'>2013</option>
+                                <option value='2014'>2014</option>
+                                <option value='2015'>2015</option>
+                                <option value='2016'>2016</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class='control-group'>
+                        <label class='control-label'>Month</label>
+                        <div class='controls'>
+                            <select id='static_month'>
+                                <option value=''>--Select Month--</option>
+                                <option value='1'>January</option>
+                                <option value='2'>February</option>
+                                <option value='3'>March</option>
+                                <option value='4'>April</option>
+                                <option value='5'>May</option>
+                                <option value='6'>June</option>
+                                <option value='7'>July</option>
+                                <option value='8'>August</option>
+                                <option value='9'>September</option>
+                                <option value='10'>October</option>
+                                <option value='11'>November</option>
+                                <option value='12'>December</option>
+                            </select>
+                        </div>
+                    </div>
+
                     {{#each formfields}}
                         <div class='control-group'>
                             <label class='control-label'>{{this.label}}:</label>
@@ -36,7 +75,7 @@
                                         <input type='hidden' id='{{this.name}}' value='{{this.default}}'>
                                     {{/if}}
                                     {{#if isEqual this.type "text"}}
-                                        TEXT FIELD</br>
+                                        <input type='text' id='{{this.name}}' value='{{this.default}}'>
                                     {{/if}}
                                 {{/each}}
 
@@ -44,233 +83,6 @@
                         </div>
 
                     {{/each}}
-
-                    <legend>Location and period</legend>
-
-                    <div class='control-group'>
-                        <label class='control-label' for='reference_terminal'>Terminal</label>
-                        <div class='controls'>
-                            <select name='reference_terminal' id='reference_terminal'>
-                                    <option value=''>--Select Terminal--</option>
-                                    <option>CTT Hengelo</option>
-                                    <option>CTT Almelo</option>
-                                    <option>CTT Rotterdam</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class='control-group'>
-                        <label class='control-label' for='reference_year'>Year</label>
-                        <div class='controls'>
-                            <select name='reference_year' id='reference_year'>
-                                <option value=''>--Select Year--</option>
-                                <option value='2008'>2008</option>
-                                <option value='2009'>2009</option>
-                                <option value='2010'>2010</option>
-                                <option value='2011'>2011</option>
-                                <option value='2012'>2012</option>
-                                <option value='2013'>2013</option>
-                                <option value='2014'>2014</option>
-                                <option value='2015'>2015</option>
-                                <option value='2016'>2016</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class='control-group'>
-                        <label class='control-label' for='reference_month'>Month</label>
-                        <div class='controls'>
-                            <select name='reference_month' id='reference_month'>
-                                <option value=''>--Select Month--</option>
-                                <option value='1'>January</option>
-                                <option value='2'>February</option>
-                                <option value='3'>March</option>
-                                <option value='4'>April</option>
-                                <option value='5'>May</option>
-                                <option value='6'>June</option>
-                                <option value='7'>July</option>
-                                <option value='8'>August</option>
-                                <option value='9'>September</option>
-                                <option value='10'>October</option>
-                                <option value='11'>November</option>
-                                <option value='12'>December</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <legend>Financials</legend>
-
-                    <div class='control-group'>
-                        <label class='control-label' for='revenue'>Revenue:</label>
-                        <div class='controls'>
-                            <div class='input-prepend'>
-                                <span class='add-on' id='revenue'>EUR</span>
-                                <input type='number' name='reference_rev' id='reference-rev' value=''>
-                            </div>
-                            
-                        </div>
-                    </div>
-
-                    <legend>Terminal throughput</legend>
-
-                    <div class='control-group'>
-                        <label for='bargemoves' class='control-label'>Barge Moves:</label>
-                        <div class='controls'>
-                            <div class='input-prepend'>
-                                <span class='add-on' id='bargemoves'>In</span>
-                                <input type='number' name='reference_mib' id='reference_mib' value=''>
-                            </div>
-                            <div class='input-prepend'>
-                                <span class='add-on'>Out</span>
-                                <input type='number' name='reference_mob' id='reference_mob' value=''>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='control-group'>
-                        <label for='bargeteu' class='control-label'>Barge TEU:</label>
-                        <div class='controls'>    
-                            <div class='input-prepend'>
-                                <span class='add-on' id='bargeteu'>In</span>
-                                <input type='number' name='reference_tib' id='reference_tib' value=''>
-                            </div>
-                            <div class='input-prepend'>
-                                <span class='add-on'>Out</span>
-                                <input type='number' name='reference_tob' id='reference_tob' value=''>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class='control-group'>
-                        <label for='truckmoves' class='control-label'>Truck Moves:</label>
-                        <div class='controls'>
-                            <div class='input-prepend'>
-                                <span class='add-on' id='truckmoves'>In</span>
-                                <input type='number' name='reference_mit' id='reference_mit' value=''>
-                            </div>
-                            <div class='input-prepend'>
-                                <span class='add-on'>Out</span>
-                                <input type='number' name='reference_mot' id='reference_mot' value=''>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='control-group'>
-                        <label for='truckteu' class='control-label'>Truck TEU:</label>
-                        <div class='controls'>    
-                            <div class='input-prepend'>
-                                <span class='add-on' id='truckteu'>In</span>
-                                <input type='number' name='reference_tit' id='reference_tit' value=''>
-                            </div>
-                            <div class='input-prepend'>
-                                <span class='add-on'>Out</span>
-                                <input type='number' name='reference_tot' id='reference_tot' value=''>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='control-group'>
-                        <label for='railmoves' class='control-label'>Rail Moves:</label>
-                        <div class='controls'>
-                            <div class='input-prepend'>
-                                <span class='add-on' id='railmoves'>In</span>
-                                <input type='number' name='reference_mir' id='reference_mir' value=''>
-                            </div>
-                            <div class='input-prepend'>
-                                <span class='add-on'>Out</span>
-                                <input type='number' name='reference_mor' id='reference_mor' value=''>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='control-group'>
-                        <label for='railteu' class='control-label'>Rail TEU:</label>
-                        <div class='controls'>    
-                            <div class='input-prepend'>
-                                <span class='add-on' id='railteu'>In</span>
-                                <input type='number' name='reference_tir' id='reference_tir' value=''>
-                            </div>
-                            <div class='input-prepend'>
-                                <span class='add-on'>Out</span>
-                                <input type='number' name='reference_tor' id='reference_tor' value=''>
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <legend>Used resources</legend>
-
-                    <div class='control-group'>
-                        <label for='energyoffice' class='control-label'>Office:</label>
-                        <div class='controls'>
-                            <div class='input-prepend'>
-                                <span class='add-on'>KwH</span>
-                                <input type='number' name='reference_kwhoffice' id='reference_kwhoffice' value=''>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='control-group'>
-                        <label for='energycrane' class='control-label'>Crane(s):</label>
-                        <div class='controls'>
-                            <div class='input-prepend'>
-                                <span class='add-on'>Diesel</span>
-                                <input type='number' name='reference_ltrcrane' id='reference_ltrcrane' value=''>
-                            </div>
-                            <div class='input-prepend'>
-                                <span class='add-on' id='energycrane'>KwH</span>
-                                <input type='number' name='reference_kwhcrane' id='reference_kwhcrane' value=''>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='control-group'>
-                        <label for='energyterminal' class='control-label'>Terminal equipment:</label>
-                        <div class='controls'>
-                            <div class='input-prepend'>
-                                <span class='add-on'>Diesel</span>
-                                <input type='number' name='reference_ltrterm' id='reference_ltrterm' value=''>
-                            </div>
-                            <div class='input-prepend'>
-                                <span class='add-on' id='energyterminal'>KwH</span>
-                                <input type='number' name='reference_kwhterm' id='reference_kwhterm' value=''>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='control-group'>
-                        <label for='energyships' class='control-label'>Ships:</label>
-                        <div class='controls'>
-                            <div class='input-prepend'>
-                                <span class='add-on'>Diesel</span>
-                                <input type='number' name='reference_ltrships' id='reference_ltrships' value=''>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='control-group'>
-                        <label for='energytrucks' class='control-label'>Trucks:</label>
-                        <div class='controls'>
-                            <div class='input-prepend'>
-                                <span class='add-on'>Diesel</span>
-                                <input type='number' name='reference_ltrtrucks' id='reference_ltrtrucks' value=''>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='control-group'>
-                        <label for='energytrains' class='control-label'>Trains:</label>
-                        <div class='controls'>
-                            <div class='input-prepend'>
-                                <span class='add-on'>Diesel</span>
-                                <input type='number' name='reference_ltrtrain' id='reference_ltrtrain' value=''>
-                            </div>
-                            <div class='input-prepend'>
-                                <span class='add-on' id='energytrains'>KwH</span>
-                                <input type='number' name='reference_kwhtrain' id='reference_kwhtrain' value=''>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='control-group'>
-                        <label for='workedhours' class='control-label'>Manhours Terminal:</label>
-                        <div class='controls'>
-                            <div class='input-prepend'>
-                                <span class='add-on'>Hours</span>
-                                <input type='number' name='reference_manhours' id='reference_manhours' value=''>
-                            </div>
-                        </div>
-                    </div>
-
-                    <legend></legend>
                     
                     <div class='control-group'>
                         <div class='controls'>

@@ -4,6 +4,9 @@ Collecties en velden:
     - roles: Object Array
         - name: String;
         - allowedlinks: String Array;
+    - locations: Object Array
+        - id: integer;
+        - name: String;
     - forms: Object Array
         - id: integer;
         - name: String;                (collection name)
@@ -23,6 +26,7 @@ Collecties en velden:
     - profile: Object
         - name: String;
         - email: String;
+        - location: integer;
         - verified: boolean;
     - roles: String Array;
     - emails: Array
