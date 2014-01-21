@@ -12,7 +12,7 @@ Collecties en velden:
             - label: String
             - inputs: Object Array
                 name: String           (field name in collection)
-                type: String;          (number, dropdown, text)
+                type: String;          (number, dropdown, text, hidden)
                 label: String;         (only for type=number)
                 default: String;
                 values: String Array;  (Only for type=dropdown)
@@ -25,15 +25,12 @@ Collecties en velden:
         - email: String;
         - verified: boolean;
     - roles: String Array;
-    - emails: Array             (Wordt alleen weergeven bij een Standaard account)
+    - emails: Array
         - address: String;
         - verified: boolean;    (Deze variable wordt niet gebruikt in dit project)
     - services: Object
-        - linkedin: Object;     (Wordt alleen weergeven bij een Linkedin account)
-        - facebook: Object;     (Wordt alleen weergeven bij een Facebook account)
-        - twitter: Object;      (Wordt alleen weergeven bij een Twitter account)
-        - password: Object;     (Wordt alleen weergeven bij een Standaard account)
+        - password: Object;
         - resume: Object;
-NOTE: Voor meer informatie wat er in de linkedin, facebook, twitter, emails of password objecten staat kunt u de volgende commando gebruiken: Meteor.users.find()
+NOTE: Voor meer informatie wat er in de emails of password objecten staat kunt u de volgende commando gebruiken wanneer u ingelogd bent: Meteor.users.find()
 
 

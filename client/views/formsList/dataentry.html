@@ -32,6 +32,9 @@
                                             {{/each}}
                                         </select>
                                     {{/if}}
+                                    {{#if isEqual this.type "hidden"}}
+                                        <input type='hidden' id='{{this.name}}' value='{{this.default}}'>
+                                    {{/if}}
                                     {{#if isEqual this.type "text"}}
                                         TEXT FIELD</br>
                                     {{/if}}
