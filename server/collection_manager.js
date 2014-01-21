@@ -16,17 +16,13 @@ Meteor.methods({
 		if (collection === "management") {
 			Management.insert(obj);
 		} else if (collection === "customerservice") {
-			console.log("customerservice insert");
-			//Management.insert
+			Customerservice.insert(obj);
 		} else if (collection === "intermodalplanning") {
-			console.log("intermodalplanning insert");
-			//Management.insert
+			Intermodalplanning.insert(obj);
 		} else if (collection === "truckplanning") {
-			console.log("truckplanning insert");
-			//Management.insert
+			Truckplanning.insert(obj);
 		} else if (collection === "terminalmanager") {
-			console.log("terminalmanager insert");
-			//Management.insert
+			TerminalManager.insert(obj);
 		}
 	}
 });

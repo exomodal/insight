@@ -1,1 +1,1 @@
-IntermodalPlanning = new Meteor.Collection("intermodalplanning");
+Intermodalplanning = new Meteor.Collection("intermodalplanning");

@@ -25,36 +25,47 @@ function setFormId(data) {
  */
 Template.dataentry.setForm = function () {
 	// Run this script to set correct form id
-  	setFormId(this);
+  setFormId(this);
 }
 
 /*
  * Get the form label
  */
 Template.dataentry.formlabel = function () {
-  	var form = getForm();
-  	if (form !== undefined && form.label !== undefined)
-  		return form.label;
-  	return undefined;
+  var form = getForm();
+  if (form !== undefined && form.label !== undefined)
+  	return form.label;
+  return undefined;
 }
 
 /*
  * Get the form label
  */
 Template.dataentry.formfields = function () {
-  	var form = getForm();
-  	if (form !== undefined && form.fields !== undefined)
-  		return form.fields;
-  	return undefined;
+  var form = getForm();
+  if (form !== undefined && form.fields !== undefined)
+  	return form.fields;
+  return undefined;
+}
+
+/*
+ * Get the user location
+ */
+Template.dataentry.location = function () {
+  var loggedInUser = Meteor.user();
+
+  if (loggedInUser && loggedInUser.profile !== undefined && loggedInUser.profile.location !== undefined)
+    return loggedInUser.profile.location;
+  return -1;
 }
 
 /*
  * Compare function
  */
 Template.dataentry.isEqual = function (a, b) {
-  	if (a === b)
-  		return true;
-  	return false;
+  if (a === b)
+  	return true;
+  return false;
 }
 
 /*****************************************************************************
@@ -80,6 +91,22 @@ function getForm() {
   	return undefined;
 }
 
+function resetInputFields() {
+  var tags = new Array();
+  var form = getForm();
+
+  // Get the field tags
+  for(var i=0;i<form.fields.length;i++) {
+    for(var j=0;j<form.fields[i].inputs.length;j++) {
+      tags.push(form.fields[i].inputs[j].name);
+    }
+  }
+  // Get the field values
+  for(var i=0;i<tags.length;i++) {
+    document.getElementById(tags[i]).value = "";
+  }
+}
+
 /*****************************************************************************
  * Event functions
  *****************************************************************************/
@@ -103,9 +130,16 @@ Template.dataentry.events({
   	for(var i=0;i<tags.length;i++) {
   		values.push(document.getElementById(tags[i]).value);
   	}
-  	console.log(tags);
-  	console.log(values);
 
+    // Append the static fields
+    tags.push('location');
+    tags.push('year');
+    tags.push('month');
+    values.push(document.getElementById('static_location').value);
+    values.push(document.getElementById('static_year').value);
+    values.push(document.getElementById('static_month').value);
+
+    // Do the dynamic insert
   	Meteor.call('dynamicinsert', form.name, tags, values, function (error, result) {
       	// If error
       	if (error) {
@@ -114,21 +148,9 @@ Template.dataentry.events({
    	});
 
     // Reset edit_id and clear input fields
-    //resetInputFields();
+    resetInputFields();
 
     // Do not submit
     return false;
   }
 });
-
-/*****************************************************************************
- * Rendered function
- *****************************************************************************/
-
-/**
- * Template rendering function
- */
-//Template.dataentry.rendered=function() {
-  // Initialize the input fields
-//  resetInputFields();
-//}
