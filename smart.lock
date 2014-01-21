@@ -9,7 +9,9 @@
       "jquery-ui-bootstrap": {},
       "iron-router": {},
       "collection-api": {},
-      "font-awesome": {}
+      "font-awesome": {},
+      "chartjs": {},
+      "momentjs": {}
     },
     "packages": {
       "spin": {
@@ -51,6 +53,16 @@
         "git": "https://github.com/nate-strauser/meteor-font-awesome.git",
         "tag": "v4.0.3",
         "commit": "61e9361384347547ae144f8228faa4deffda23db"
+      },
+      "chartjs": {
+        "git": "https://github.com/donskifarrell/meteor-chartjs.git",
+        "tag": "v0.0.4",
+        "commit": "9d2adcd1de3728c8227e8eb7da0dcb2e0df21d0b"
+      },
+      "momentjs": {
+        "git": "https://github.com/crapthings/meteor-momentjs.git",
+        "tag": "v2.1.0.2",
+        "commit": "59a762e297082eea8b8cae00374c2b7ac6f89529"
       }
     }
   }

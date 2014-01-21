@@ -16,3 +16,5 @@ jquery-ui-bootstrap
 iron-router
 jquery
 font-awesome
+chartjs
+momentjs

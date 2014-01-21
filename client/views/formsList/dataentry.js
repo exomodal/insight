@@ -143,11 +143,9 @@ Template.dataentry.events({
 
     // Append the static fields
     tags.push('location');
-    tags.push('year');
-    tags.push('month');
+    tags.push('timestamp');
     values.push(document.getElementById('static_location').value);
-    values.push(document.getElementById('static_year').value);
-    values.push(document.getElementById('static_month').value);
+    values.push(Number(moment("01-"+document.getElementById('static_month').value+"-"+document.getElementById('static_year').value+" 12:00", "DD-MM-YYYY HH:mm").unix() * 1000));
 
     // Do the dynamic insert
   	Meteor.call('dynamicinsert', form.name, tags, values, function (error, result) {

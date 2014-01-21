@@ -3,9 +3,89 @@
         <div class="container">
             <header class="hero-unit">
                 <h1>Revenues page!</h1>
-                <p>A key performance indicator tool is a quantifiable metric that reflects how wel an organization has achieved it's stated goals and objectives.</p>
-                <p>This application enables a powerful tooling for your business intelligence solution. It quickly provides an overview of the health and direction of the organization from an operations and revenue drive dataset. Anticipate, analyze and act on Key Performance Indicators.</p>
-                <button type="button" class="btn btn-lg btn-info">More info</button>
+                
+                <h3>Filter</h3>
+        
+                <div class='control-group'>
+                    <label class='control-label'>Start Year</label>
+                    <div class='controls'>
+                        <select id='start_year'>
+                            <option value=''>--Select Year--</option>
+                            <option value='2008'>2008</option>
+                            <option value='2009'>2009</option>
+                            <option value='2010'>2010</option>
+                            <option value='2011'>2011</option>
+                            <option value='2012'>2012</option>
+                            <option value='2013'>2013</option>
+                            <option value='2014'>2014</option>
+                            <option value='2015'>2015</option>
+                            <option value='2016'>2016</option>
+                        </select>
+                    </div>
+                </div>
+                <div class='control-group'>
+                    <label class='control-label'>Start Month</label>
+                    <div class='controls'>
+                        <select id='start_month'>
+                            <option value=''>--Select Month--</option>
+                            <option value='1'>January</option>
+                            <option value='2'>February</option>
+                            <option value='3'>March</option>
+                            <option value='4'>April</option>
+                            <option value='5'>May</option>
+                            <option value='6'>June</option>
+                            <option value='7'>July</option>
+                            <option value='8'>August</option>
+                            <option value='9'>September</option>
+                            <option value='10'>October</option>
+                            <option value='11'>November</option>
+                            <option value='12'>December</option>
+                        </select>
+                    </div>
+                </div>
+                <div class='control-group'>
+                    <label class='control-label'>End Year</label>
+                    <div class='controls'>
+                        <select id='end_year'>
+                            <option value=''>--Select Year--</option>
+                            <option value='2008'>2008</option>
+                            <option value='2009'>2009</option>
+                            <option value='2010'>2010</option>
+                            <option value='2011'>2011</option>
+                            <option value='2012'>2012</option>
+                            <option value='2013'>2013</option>
+                            <option value='2014'>2014</option>
+                            <option value='2015'>2015</option>
+                            <option value='2016'>2016</option>
+                        </select>
+                    </div>
+                </div>
+                <div class='control-group'>
+                    <label class='control-label'>End Month</label>
+                    <div class='controls'>
+                        <select id='end_month'>
+                            <option value=''>--Select Month--</option>
+                            <option value='1'>January</option>
+                            <option value='2'>February</option>
+                            <option value='3'>March</option>
+                            <option value='4'>April</option>
+                            <option value='5'>May</option>
+                            <option value='6'>June</option>
+                            <option value='7'>July</option>
+                            <option value='8'>August</option>
+                            <option value='9'>September</option>
+                            <option value='10'>October</option>
+                            <option value='11'>November</option>
+                            <option value='12'>December</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h3>Chart</h3>
+
+                <div class="chartDisplay">
+                    <canvas class="chart" id="chart" width="800px" height="300px"></canvas>
+                </div>
             </header>
         </div>
     </div>
