@@ -34,28 +34,9 @@ Template.verificating.isPending = function() {
  *****************************************************************************/
 
 /*
- * Get the account type of the user.
- */
-function getType(user) {
-	if (user !== null && user.services !== undefined) {
-		if (user.services.facebook !== undefined) {
-			return "Facebook";
-		} else if (user.services.linkedin !== undefined) {
-			return "Linkedin";
-		} else if (user.services.twitter !== undefined) {
-			return "Twitter";
-		}
-	}
-	return "Normal";
-}
-
-/*
  * Get the email address of the user.
  */
 function getAddress(user) {
-	// Get the account type
-	var type = getType(user);
-
 	// If the user already filled his email address once
 	// it will be located in the profile.
 	if (user !== null && user.profile !== undefined && user.profile.email !== undefined) {
@@ -63,13 +44,7 @@ function getAddress(user) {
 
 	// Else we display the email address from the services
 	} else if (user !== null) {
-		if (type === "Normal") {
-			return user.emails[0].address;
-		} else if (type === "Facebook") {
-			return user.services.facebook.email;
-		} else if (type === "Linkedin") {
-			return user.services.linkedin.emailAddress;
-		}
+		return user.emails[0].address;
 	}
 	return "";
 }
@@ -78,23 +53,10 @@ function getAddress(user) {
  * Get the full name of the user.
  */
 function getName(user) {
-	// Get the account type
-	var type = getType(user);
-
 	// If the user already filled his name once
 	// it will be located in the profile.
-	if (user !== null && user.profile !== undefined && user.profile.name !== undefined) {
+	if (user !== null && user.profile !== undefined && user.profile.name !== undefined) 
 		return user.profile.name;
-	
-	// Else we display the name from the services
-	} else if (user !== null) {
-		// Only Facebook and Linkedin accounts does have a full name
-		if (type === "Facebook") {
-			return user.services.facebook.first_name + " " + user.services.facebook.first_name;
-		} else if (type === "Linkedin") {
-			return user.services.linkedin.firstName + " " + user.services.linkedin.lastName;
-		}
-	}
 	return "";
 }
 

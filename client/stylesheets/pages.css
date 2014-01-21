@@ -27,15 +27,22 @@
 /*
  * Admin Page
  */
-.adminPage {}
-.adminPage .usersTable {
+.adminUser {}
+.adminUser .table {
   width:100%;
+  height:100%;
 }
-.adminPage .usersTable .textfield {
-  width:auto;
+.adminUser .table .row {
+  width:100%;
+  min-height:1px;
+  height:auto;
+  margin:0;
 }
-.adminPage .usersTable .dropdown {
-  width:auto;
+.adminUser .table .row .cell {
+  float:left;
+  margin:0;
+  padding:0;
+  width:16%;      /* 100% defided by amount of cells */
 }
 
 /*

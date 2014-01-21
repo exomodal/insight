@@ -31,9 +31,6 @@ Template.adminUser.getName = function(user) {
 Template.adminUser.getAddress = function(user) {
 	return getAddress(user);
 }
-Template.adminUser.getType = function(user) {
-	return getType(user);
-}
 Template.adminUser.getVerified = function(user) {
 	return getVerified(user);
 }
@@ -41,22 +38,6 @@ Template.adminUser.getVerified = function(user) {
 /*****************************************************************************
  * General functions
  *****************************************************************************/
-
-/*
- * Get the account type of the user.
- */
-function getType(user) {
-  if (user.services !== undefined) {
-    if (user.services.facebook !== undefined) {
-      return "Facebook";
-    } else if (user.services.linkedin !== undefined) {
-      return "Linkedin";
-    } else if (user.services.twitter !== undefined) {
-      return "Twitter";
-    }
-  }
-  return "Normal";
-}
 
 /*
  * Get the full name of the user.
@@ -81,11 +62,8 @@ function getAddress(user) {
  */
 function getVerified(user) {
 	if (user.profile !== undefined && user.profile.verified !== undefined) {
-    if (user.profile.verified == true) {
+    if (user.profile.verified == true)
       return "Yes";
-    } else {
-      return "No";
-    }
   }
 	return "No";
 }
@@ -102,15 +80,10 @@ function resetInputFields() {
   $('#nameField').val('');
   $('#passwordField').val('');
   $('#roleField').val('');
-  $('#typeField').val('');
   $('#verifiedField').val('');
 
-  // Set the password field and its placeholder
-  var passwordField = document.getElementById("passwordField");
-  if (passwordField !== null && passwordField !== undefined) {
-    passwordField.disabled = true;
-    passwordField.placeholder = '';
-  }
+  // Set the password field placeholder
+  passwordField.placeholder = '';
 }
 
 /*****************************************************************************
@@ -131,7 +104,6 @@ Template.adminUser.events({
     var emailVal = document.getElementById("emailField").value;
     var nameVal = document.getElementById("nameField").value;
     var passwordVal = document.getElementById("passwordField").value;
-    var typeVal = document.getElementById("typeField").value;
     var roleVal = document.getElementById("roleField").value;
 
     // If undefined we do an insert
@@ -144,7 +116,7 @@ Template.adminUser.events({
         }
    		});
       // Update the password when necessary
-      if (passwordVal !== "" && typeVal === "Normal") {
+      if (passwordVal !== "") {
         Meteor.call('setPassword', ADMIN_EDIT_ID, passwordVal, function (error, result) {
           // If error
           if (error) {
@@ -153,7 +125,7 @@ Template.adminUser.events({
         });
       }
     } else {
-      throwError("Selecteer eerst een account dat u wilt bewerken.");
+      throwError("Please select an account first.");
     }
     // Reset edit_id and clear input fields
     resetInputFields();
@@ -178,20 +150,10 @@ Template.adminUser.events({
   	$('#emailField').val(getAddress(this));
   	$('#nameField').val(getName(this));
   	$('#roleField').val(this.roles);
-  	$('#typeField').val(getType(this));
     $('#verifiedField').val(getVerified(this));
     
-    // Set the password field enabled when the account type is Normal
-    var passwordField = document.getElementById("passwordField");
-    if (passwordField !== null && passwordField !== undefined) {
-      if (getType(this) === "Normal") {
-        passwordField.disabled = false;
-        passwordField.placeholder = 'Unmodified';
-      } else {
-        passwordField.disabled = true;
-        passwordField.placeholder = '';
-      }
-    }
+    // Set the password field placeholder
+    passwordField.placeholder = 'Unmodified';
   },
 
   /*
