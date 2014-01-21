@@ -20,19 +20,20 @@ edit the accounts of all users.
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a href="#" class="btn removeCancelButton">Cancel</a>
-				<a href="#" class="btn btn-primary removeOkButton">OK</a>
+				<a href="#" class="btn btn-info btn-lg removeCancelButton">Cancel</a>
+				<a href="#" class="btn btn-danger btn-lg removeOkButton">OK</a>
 			</div>
 		</div>
 
 		<!--
 		Create the page itself.
 		-->
-		<div class="well well-large">
-			<legend>Users</legend>
+		<div class="hero-unit">
+        	<h1>Users</h1>
+
 
 			<div class="table">
-			    <div class="row header">
+			    <div class="row header"> 
 			       	<div class="cell"><span>Emailadres</span></div>
 			       	<div class="cell"><span>Full Name</span></div>
 			       	<div class="cell"><span>Password</span></div>
@@ -60,21 +61,21 @@ edit the accounts of all users.
 						</select>
 					</div>
 					<div class="cell">
-						<button class="btn btn-default btn-xs saveButton">Save</button>
-						<button class="btn btn-default btn-xs cancelButton">Cancel</button>
+						<button class="btn btn-info btn-lg saveButton">Save</button>
+						<button class="btn btn-danger btn-lg cancelButton">Cancel</button>
 					</div>
 			    </div>
 
 			    {{#each user}}
 			    	<div class="row body">
-			       		<div class="cell"><span>{{getAddress this}}</span></div>
-				       	<div class="cell"><span>{{getName this}}</span></div>
+			       		<div class="cell"><span>{{getAddress this}}&nbsp;</span></div>
+				       	<div class="cell"><span>{{getName this}}&nbsp;</span></div>
 				       	<div class="cell"><span>&nbsp;</span></div>
-				       	<div class="cell"><span>{{this.roles}}</span></div>
-				       	<div class="cell"><span>{{getVerified this}}</span></div>
+				       	<div class="cell"><span>{{this.roles}}&nbsp;</span></div>
+				       	<div class="cell"><span>{{getVerified this}}&nbsp;</span></div>
 				       	<div class="cell">
-				       		<button class="btn btn-default btn-xs editButton"><i class="icon-edit"></i></button>
-							<button data-toggle="modal" href="#removeDialog" class="btn btn-default btn-xs removeButton"><i class="icon-remove"></i></button>
+				       		<button class="btn btn-info btn-lg editButton"><i class="icon-edit icon-white"></i></button>
+							<button data-toggle="modal" href="#removeDialog" class="btn btn-danger btn-lg removeButton"><i class="icon-remove icon-white"></i></button>
 				       	</div>
 			    	</div>
 				{{/each}}

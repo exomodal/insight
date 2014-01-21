@@ -44,6 +44,13 @@
   padding:0;
   width:16%;      /* 100% defided by amount of cells */
 }
+.adminUser .table .row.body {
+  border-bottom:solid 1px;
+  border-top:solid 1px;
+  border-color:#dddddd;
+  padding-top:5px;
+  padding-bottom:5px;
+}
 
 /*
  * Profile Page
