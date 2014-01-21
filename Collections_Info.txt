@@ -3,10 +3,8 @@ Collecties en velden:
 - Configuration (http://localhost:3000/collectionapi/configuration)
     - roles: Object Array
         - name: String;
+        - location: String;           (optional: only if role is bound to specific location)
         - allowedlinks: String Array;
-    - locations: Object Array
-        - id: integer;
-        - name: String;
     - forms: Object Array
         - id: integer;
         - name: String;                (collection name)
@@ -26,7 +24,6 @@ Collecties en velden:
     - profile: Object
         - name: String;
         - email: String;
-        - location: integer;
         - verified: boolean;
     - roles: String Array;
     - emails: Array
