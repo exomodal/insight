@@ -1,5 +1,15 @@
 // Variable declarations
 var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+var IGNORED_TAGS = ["_id","location","timestamp"];
+var DEFAULT_COLORS = ["220,0,0","0,220,0","0,0,220","220,220,0","0,220,220","220,0,220","110,0,0","0,110,0","0,0,110","110,110,0","0,110,110","110,0,110"]
+
+/*****************************************************************************
+ * General Template function
+ *****************************************************************************/
+
+Template.revenues.tags = function() {
+  return getTags();
+}
 
 /*****************************************************************************
  * General function
@@ -13,17 +23,58 @@ function monthDifference(d1, d2) {
     return months <= 0 ? 0 : months;
 }
 
+function getTags() {
+  var doc = Customerservice.findOne();
+  var tags = new Array();
+
+  // Get the field tags
+  for(var name in doc) {
+    var ignore = false;
+    for(var i=0;i<IGNORED_TAGS.length;i++) {
+      if (IGNORED_TAGS[i] === name) { ignore = true; }
+    }
+    if (!ignore)
+      tags.push(name);
+  }
+
+  return tags;
+}
+
+function buildDataset(tags, data) {
+  var datasets = new Array();
+
+  for (var i=0;i<tags.length;i++) {
+    if ($('#'+tags[i]).attr('checked')) {
+      datasets.push(
+        {
+          fillColor : "rgba(" + DEFAULT_COLORS[i] + ",0.0)",
+          strokeColor : "rgba(" + DEFAULT_COLORS[i] + ",1)",
+          pointColor : "rgba(" + DEFAULT_COLORS[i] + ",1)",
+          pointStrokeColor : "#fff",
+          data : data[tags[i]]
+        });
+    }
+  }
+
+  return datasets;
+}
+
 function renderGraph(start_month, start_year, end_month, end_year) {
 
   if (start_month !== '' && start_year !== '' && end_month !== '' && end_year !== '') {
+    // Initialize arrays
+    var data = new Object();
+    var labels = new Array();
+    var tags = getTags();
+    for (var i=0;i<tags.length;i++) {
+      if ($('#'+tags[i]).attr('checked')) {
+        data[tags[i]] = new Array();
+      }
+    }
 
     // Calculate timestamps
     var start_timestamp = Number(moment("01-"+start_month+"-"+start_year+" 09:00", "DD-MM-YYYY HH:mm").unix() * 1000);
     var end_timestamp = Number(moment("01-"+end_month+"-"+end_year+" 20:00", "DD-MM-YYYY HH:mm").unix() * 1000);
-
-    // Initialize arrays
-    var data = new Array();
-    var labels = new Array();
 
     // Parse each month
     var month_count = monthDifference(start_timestamp, end_timestamp);
@@ -38,10 +89,14 @@ function renderGraph(start_month, start_year, end_month, end_year) {
       var ts1 = Number(moment("01-"+month+"-"+year+" 09:00", "DD-MM-YYYY HH:mm").unix() * 1000);
       var ts2 = Number(moment("01-"+month+"-"+year+" 20:00", "DD-MM-YYYY HH:mm").unix() * 1000);
       var doc = Customerservice.findOne({timestamp:{$gt:ts1,$lt:ts2}});
-      if (doc && doc.revenuebarge) {
-        data.push(Number(doc.revenuebarge));
-      } else {
-        data.push(0);
+      for (var j=0;j<tags.length;j++) {
+        if ($('#'+tags[j]).attr('checked')) {
+          if (doc && doc[tags[j]]) {
+            data[tags[j]].push(Number(doc[tags[j]]));
+          } else {
+            data[tags[j]].push(0);
+          }
+        }
       }
 
       // update the counter
@@ -55,22 +110,7 @@ function renderGraph(start_month, start_year, end_month, end_year) {
     // Build the dataset
     var data = {
       labels : labels,
-      datasets : [
-        {
-          fillColor : "rgba(220,220,220,0.5)",
-          strokeColor : "rgba(220,220,220,1)",
-          pointColor : "rgba(220,220,220,1)",
-          pointStrokeColor : "#fff",
-          data : data
-        },
-        {
-          fillColor : "rgba(151,187,205,0.5)",
-          strokeColor : "rgba(151,187,205,1)",
-          pointColor : "rgba(151,187,205,1)",
-          pointStrokeColor : "#fff",
-          data : data
-        }
-      ]
+      datasets : buildDataset(tags, data)
     }
 
     //Get the context of the canvas element we want to select
@@ -80,36 +120,21 @@ function renderGraph(start_month, start_year, end_month, end_year) {
   }
 }
 
-
 /*****************************************************************************
- * Template rendered function
+ * Event functions
  *****************************************************************************/
 
-Template.revenues.rendered=function() {
-  // Auto update when data changed
-  var start_year = '';
-  var start_month = '';
-  var end_year = '';
-  var end_month = '';
+Template.revenues.events({
+  /*
+   * Executed when clicking the Submit button
+   */
+  'click .submit':function(e) {
 
-  $("#start_year").change(function() {
-    start_year = this.value;
-    renderGraph(start_month, start_year, end_month, end_year);
-  });
-  $("#start_month").change(function() {
-    start_month = this.value;
-    renderGraph(start_month, start_year, end_month, end_year);
-  });
-  $("#end_year").change(function() {
-    end_year = this.value;
-    renderGraph(start_month, start_year, end_month, end_year);
-  });
-  $("#end_month").change(function() {
-    end_month = this.value;
-    renderGraph(start_month, start_year, end_month, end_year);
-  });
+    var start_year = document.getElementById('start_year').value;
+    var start_month = document.getElementById('start_month').value;
+    var end_year = document.getElementById('end_year').value;
+    var end_month = document.getElementById('end_month').value;
 
-
-  
-
-}
+    renderGraph(start_month, start_year, end_month, end_year);
+  }
+});
