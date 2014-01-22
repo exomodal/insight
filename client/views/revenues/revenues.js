@@ -7,6 +7,22 @@ var DEFAULT_COLORS = ["220,0,0","0,220,0","0,0,220","220,220,0","0,220,220","220
  * General Template function
  *****************************************************************************/
 
+Template.revenues.charts = function() {
+  var chart_type = document.getElementById('chart_type');
+  var chart_display = document.getElementById('chartDisplay');
+
+  if (chart_type && chart_type.value === "Pie") {
+    var tags = getTags();
+    var inner_html = "";
+
+    for (var i=0;i<tags;i++) {
+      inner_html += "<canvas class='chart' id='chart_" + tags[i] + "' width='200px' height='200px'></canvas>";
+    }
+  }
+  if (chart_display)
+    chart_display.innerHTML = "<canvas class='chart' id='chart' width='800px' height='200px'></canvas>"
+}
+
 Template.revenues.tags = function() {
   return getTags();
 }
@@ -45,9 +61,13 @@ function buildDataset(tags, data) {
 
   for (var i=0;i<tags.length;i++) {
     if ($('#'+tags[i]).attr('checked')) {
+      var lightness = "0.0";
+      if (document.getElementById('chart_type').value === "Bar")
+        lightness = "0.5"
+
       datasets.push(
         {
-          fillColor : "rgba(" + DEFAULT_COLORS[i] + ",0.0)",
+          fillColor : "rgba(" + DEFAULT_COLORS[i] + "," + lightness + ")",
           strokeColor : "rgba(" + DEFAULT_COLORS[i] + ",1)",
           pointColor : "rgba(" + DEFAULT_COLORS[i] + ",1)",
           pointStrokeColor : "#fff",
@@ -116,7 +136,11 @@ function renderGraph(start_month, start_year, end_month, end_year) {
     //Get the context of the canvas element we want to select
     var ctx = document.getElementById("chart").getContext("2d");
 
-    new Chart(ctx).Line(data, null);
+    if (document.getElementById('chart_type').value === "Bar") {
+      new Chart(ctx).Bar(data, null);
+    } else {
+      new Chart(ctx).Line(data, null);
+    }
   }
 }
 
