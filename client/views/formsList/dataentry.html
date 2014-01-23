@@ -3,7 +3,7 @@
 	<div class='wrapper row-fluid'>
         <div class='container'>
 
-            {{setForm}}
+            {{initialize}}
 
             <form class='form-horizontal' onsubmit="return false">
 
@@ -12,7 +12,23 @@
                     
                     <legend>{{formlabel}}</legend>
 
-                    <input type='hidden' id='static_location' value='{{location}}'>
+                    {{#if isLocationBound}}
+                        {{#if isLocalUser}}
+                            <input type='hidden' id='static_location' value='{{userLocation}}'>
+                        {{else}}
+                            <div class='control-group'>
+                                <label class='control-label'>Location:</label>
+                                <div class='controls'>
+                                    <select id='static_location'>
+                                        <option value=''>--Select Location--</option>
+                                        {{#each location}}
+                                            <option value='{{this.id}}'>{{this.name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                        {{/if}}
+                    {{/if}}
                     <div class='control-group'>
                         <label class='control-label'>Year:</label>
                         <div class='controls'>

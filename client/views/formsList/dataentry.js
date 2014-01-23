@@ -2,30 +2,18 @@
 var FORM_ID;
 
 /*****************************************************************************
- * Variable functions
+ * General Template functions
  *****************************************************************************/
 
 /*
  * This function sets the form id variable based on the URL.
  */
-function setFormId(data) {
-  	if (data !== undefined && data[0] !== undefined) {
-    	FORM_ID = Number(data[0]);
-  	} else {
-    	FORM_ID = -1;
-  	}
-}
-
-/*****************************************************************************
- * General template functions
- *****************************************************************************/
-
-/*
- * Get all lock data from one lock name and direction ordered by schuttime, then eta.
- */
-Template.dataentry.setForm = function () {
-	// Run this script to set correct form id
-  setFormId(this);
+Template.dataentry.initialize = function () {
+	if (this && this[0]) {
+    FORM_ID = Number(this[0]);
+  } else {
+    FORM_ID = -1;
+  }
 }
 
 /*
@@ -33,33 +21,75 @@ Template.dataentry.setForm = function () {
  */
 Template.dataentry.formlabel = function () {
   var form = getForm();
-  if (form !== undefined && form.label !== undefined)
+  if (form && form.label)
   	return form.label;
   return undefined;
 }
 
 /*
- * Get the form label
+ * Get the form fields
  */
 Template.dataentry.formfields = function () {
   var form = getForm();
-  if (form !== undefined && form.fields !== undefined)
+  if (form && form.fields)
   	return form.fields;
   return undefined;
 }
 
 /*
- * Get the user location
+ * Get the list of locations
  */
 Template.dataentry.location = function () {
+  var config = Configuration.findOne();
+  if (config && config.locations)
+    return config.locations;
+  return undefined;
+}
+
+/*
+ * Returns whether the form is location bound.
+ * If so the location field should be added.
+ */
+Template.dataentry.isLocationBound = function () {
+  var form = getForm();
+  if (form && form.locationbound)
+    return form.locationbound;
+  return false;
+}
+
+/*
+ * Returns whether the user does have a location
+ */
+Template.dataentry.isLocalUser = function () {
   var loggedInUser = Meteor.user();
 
-  if (loggedInUser && loggedInUser.roles !== undefined && loggedInUser.roles[0] !== undefined) {
+  if (loggedInUser && loggedInUser.roles && loggedInUser.roles[0]) {
     var config = Configuration.findOne();
     
-    if (config !== undefined && config.roles !== undefined) {
+    if (config && config.roles) {
       for (var i=0;i<config.roles.length;i++) {
-        if (config.roles[i].name === loggedInUser.roles[0] && config.roles[i].location !== undefined) {
+        if (config.roles[i].name === loggedInUser.roles[0] && config.roles[i].location) {
+          return true;
+        }
+      }
+
+    }
+  }
+  return false;
+}
+
+/*
+ * Get the user location
+ */
+Template.dataentry.userLocation = function () {
+  var loggedInUser = Meteor.user();
+
+  if (loggedInUser && loggedInUser.roles && loggedInUser.roles[0]) {
+    var config = Configuration.findOne();
+    
+    if (config && config.roles) {
+      for (var i=0;i<config.roles.length;i++) {
+        if (config.roles[i].name === loggedInUser.roles[0] && config.roles[i].location) {
           return config.roles[i].location;
         }
       }
@@ -86,19 +116,19 @@ Template.dataentry.isEqual = function (a, b) {
  * Get the current selected form based on the URL.
  */
 function getForm() {
-  	// Get the configuration
-  	var config = Configuration.findOne();
-  	if (config !== undefined && config.forms !== undefined) {
+  // Get the configuration
+  var config = Configuration.findOne();
+  if (config && config.forms) {
 
-  		// Parse each form to find the correct one
-  		for (var i=0;i<config.forms.length;i++) {
-  			if (config.forms[i].id === FORM_ID) {
-  				return config.forms[i];
-  			}
-  		}
-  	}
+    // Parse each form to find the correct one
+    for (var i=0;i<config.forms.length;i++) {
+    	if (config.forms[i].id === FORM_ID) {
+    		return config.forms[i];
+    	}
+    }
+  }
 
-  	return undefined;
+  return undefined;
 }
 
 function resetInputFields() {
@@ -142,9 +172,11 @@ Template.dataentry.events({
   	}
 
     // Append the static fields
-    tags.push('location');
+    if (form && form.locationbound && form.locationbound === true) {
+      tags.push('location');
+      values.push(Number(document.getElementById('static_location').value));
+    }
     tags.push('timestamp');
-    values.push(document.getElementById('static_location').value);
     values.push(Number(moment("01-"+document.getElementById('static_month').value+"-"+document.getElementById('static_year').value+" 12:00", "DD-MM-YYYY HH:mm").unix() * 1000));
 
     // Do the dynamic insert
