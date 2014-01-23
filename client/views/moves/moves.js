@@ -6,7 +6,7 @@
  * This function will initialize the 'this.data' variable which
  * will be used by the SingleGraph template.
  */
-Template.revenues.initialize_graph = function() {
-  this.data = {"collection":"customerservice",
+Template.moves.initialize_graph = function() {
+  this.data = {"collection":"terminalmanager",
               "ignore":["_id","location","timestamp"]};
 }
