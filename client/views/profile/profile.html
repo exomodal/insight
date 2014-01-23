@@ -1,25 +1,31 @@
 <template name="profile">
 	<div class="wrapper profilePage">
-    <div class="container">    
-      <div class="hero-unit">
-        <h1>User details</h1>
-        <table class="profileTable" id="profile">
-			    <tbody>
+    	<div class="container">    
+      		<div class="hero-unit">
+        		<h1>User details</h1>
+        		<table class="profileTable" id="profile">
+			    	<tbody>
 					    <tr>
-                <td class="title" style="">Emailadres:</td>
+                			<td class="title" style="">Emailadres:</td>
 						    <td class="field" style="font-size:70%">{{email}}</td>
 					    </tr>
 					    <tr>
-                <td class="title">Full name:</td>
+                			<td class="title">Full name:</td>
 						    <td class="field" style="font-size:70%">{{fullname}}</td>
 					    </tr>
 					    <tr>
-                <td class="title">Role:</td>
+                			<td class="title">Role:</td>
 						    <td class="field" style="font-size:70%">{{role}}</td>
 					    </tr>
+					    {{#if isLocalUser}}
+                            <tr>
+                				<td class="title">Location:</td>
+						   		<td class="field" style="font-size:70%">{{location}}</td>
+					    	</tr>
+                        {{/if}}
 				    </tbody>
 			    </table>
-		  </div>
-    </div>
+		  	</div>
+    	</div>
 	</div>
 </template>
