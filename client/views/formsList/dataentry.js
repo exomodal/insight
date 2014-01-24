@@ -1,5 +1,33 @@
 // Variable declarations
 var FORM_ID;
+var FORM_EDIT_ID;
+var FORM_NAME;
+
+/*****************************************************************************
+ * Collection function
+ *****************************************************************************/
+
+/*
+ * This function will execute the findOne query onto the
+ * correct collection.
+ */
+function findOne(collection, selector, options) {
+  if (!selector) { selector = {}; }
+  if (!options) { options = {}; }
+
+  // Do a findOne onto the correct collection
+  if (collection === "management") {
+    return Management.findOne(selector, options);
+  } else if (collection === "customerservice") {
+    return Customerservice.findOne(selector, options);
+  } else if (collection === "intermodalplanning") {
+    return Intermodalplanning.findOne(selector, options);
+  } else if (collection === "truckplanning") {
+    return Truckplanning.findOne(selector, options);
+  } else if (collection === "terminalmanager") {
+    return TerminalManager.findOne(selector, options);;
+  }
+}
 
 /*****************************************************************************
  * General Template functions
@@ -9,11 +37,25 @@ var FORM_ID;
  * This function sets the form id variable based on the URL.
  */
 Template.dataentry.initialize = function () {
-	if (this && this[0]) {
+	if (this && this[0] && this[1]) {
     FORM_ID = Number(this[0]);
+    FORM_EDIT_ID = this[1];
+    var form = getForm();
+    if (form && form.name) {
+      FORM_NAME = form.name;
+    }
   } else {
     FORM_ID = -1;
+    FORM_EDIT_ID = -1;
+    FORM_NAME = "";
   }
+}
+
+/*
+ * Get the form id
+ */
+Template.dataentry.formid = function () {
+  return FORM_ID;
 }
 
 /*
@@ -131,19 +173,45 @@ function getForm() {
   return undefined;
 }
 
-function resetInputFields() {
-  var tags = new Array();
-  var form = getForm();
+function getYear(timestamp) {
+  if (timestamp && timestamp !== 0)
+    return moment.unix(timestamp/1000).year();
+  return "";
+}
 
-  // Get the field tags
-  for(var i=0;i<form.fields.length;i++) {
-    for(var j=0;j<form.fields[i].inputs.length;j++) {
-      tags.push(form.fields[i].inputs[j].name);
+function getMonth(timestamp) {
+  if (timestamp && timestamp !== 0)
+    return moment.unix(timestamp/1000).month()+1;
+  return "";
+}
+
+function resetInputFields() {
+  var doc = findOne(FORM_NAME, {_id:FORM_EDIT_ID}, {});
+  
+
+  if (doc) {
+    // Set the year and month field
+    document.getElementById('static_month').value = getMonth(doc.timestamp);
+    document.getElementById('static_year').value = getYear(doc.timestamp);
+
+
+    var tags = new Array();
+    var form = getForm();
+
+    // Get the field tags
+    for(var i=0;i<form.fields.length;i++) {
+      for(var j=0;j<form.fields[i].inputs.length;j++) {
+        tags.push(form.fields[i].inputs[j].name);
+      }
     }
-  }
-  // Get the field values
-  for(var i=0;i<tags.length;i++) {
-    document.getElementById(tags[i]).value = "";
+    // Get the field values
+    for(var i=0;i<tags.length;i++) {
+      if (doc[tags[i]]) {
+        document.getElementById(tags[i]).value = doc[tags[i]];
+      } else {
+        document.getElementById(tags[i]).value = "";
+      }
+    }
   }
 }
 
@@ -176,21 +244,24 @@ Template.dataentry.events({
       tags.push('location');
       values.push(Number(document.getElementById('static_location').value));
     }
-    tags.push('timestamp');
-    values.push(Number(moment("01-"+document.getElementById('static_month').value+"-"+document.getElementById('static_year').value+" 12:00", "DD-MM-YYYY HH:mm").unix() * 1000));
 
-    // Do the dynamic insert
-  	Meteor.call('dynamicinsert', form.name, tags, values, function (error, result) {
+    // Do the dynamic update
+  	Meteor.call('dynamicupdate', FORM_NAME, FORM_EDIT_ID, tags, values, function (error, result) {
       	// If error
       	if (error) {
         	throwError(error.reason);
         }
    	});
 
-    // Reset edit_id and clear input fields
-    resetInputFields();
-
-    // Do not submit
-    return false;
+    // Go back to the lists
+    return true;
   }
 });
+
+/*****************************************************************************
+ * Template rendered function
+ *****************************************************************************/
+
+Template.dataentry.rendered = function() {
+  resetInputFields();
+}
