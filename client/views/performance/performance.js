@@ -3,36 +3,22 @@ var MONTHS = ["January","February","March","April","May","June","July","August",
 var DEFAULT_COLORS = ["220,0,0","0,220,0","0,0,220","220,220,0","0,220,220","220,0,220","110,0,0","0,110,0","0,0,110","110,110,0","0,110,110","110,0,110"];
 var DEFAULT_COLORS_HEX = ["#DC0000","#00DC00","#0000DC","#DCDC00","#00DCDC","#DC00DC","#6E0000","#006E00","#00006E","#6E6E00","#006E6E","#6E006E"];
 
-var SINGLEGRAPH_COLLECTION;
-var SINGLEGRAPH_IGNORE_TAGS;
+var PERFORMANCE_TAGS = [{"id":4,"label":"All Moves","names":["bargemovesin","bargemovesout","truckmovesin","truckmovesout","trainmovesin","trainmovesout"]}];
+
+var PERFORMANCE_SPLIT = "terminalmanhours";
+
+var PERFORMANCE_COLLECTION = "terminalmanager";	// Will be located in PERFORMANCE_TAGS later
+var PERFORMANCE_IGNORE_TAGS;
 
 /*****************************************************************************
  * General Template function
  *****************************************************************************/
 
 /*
- * This function will initialize the default variables
- * which should be located in the 'this.data' variable.
- */
-Template.singleGraphs.initialize = function() {
-  // Check if the data is available
-  if (this.data && this.data.collection && this.data.ignore) {
-    SINGLEGRAPH_COLLECTION = this.data.collection;
-    SINGLEGRAPH_IGNORE_TAGS = this.data.ignore;
-
-  // If the data is not available we throw an error
-  } else {
-    SINGLEGRAPH_COLLECTION = undefined;
-    SINGLEGRAPH_IGNORE_TAGS = undefined;
-    throwError("The graphs are not correctly initialized! Please contact the administrator.");
-  }
-}
-
-/*
  * This function will return all available tags.
  */
-Template.singleGraphs.tags = function() {
-  return getTags();
+Template.performance.tags = function() {
+  return PERFORMANCE_TAGS;
 }
 
 /*****************************************************************************
@@ -48,15 +34,15 @@ function findOne(obj) {
   if (!obj) { obj = {}; }
 
   // Do a findOne onto the correct collection
-  if (SINGLEGRAPH_COLLECTION === "management") {
+  if (PERFORMANCE_COLLECTION === "management") {
     return Management.findOne(obj);
-  } else if (SINGLEGRAPH_COLLECTION === "customerservice") {
+  } else if (PERFORMANCE_COLLECTION === "customerservice") {
     return Customerservice.findOne(obj);
-  } else if (SINGLEGRAPH_COLLECTION === "intermodalplanning") {
+  } else if (PERFORMANCE_COLLECTION === "intermodalplanning") {
     return Intermodalplanning.findOne(obj);
-  } else if (SINGLEGRAPH_COLLECTION === "truckplanning") {
+  } else if (PERFORMANCE_COLLECTION === "truckplanning") {
     return Truckplanning.findOne(obj);
-  } else if (SINGLEGRAPH_COLLECTION === "terminalmanager") {
+  } else if (PERFORMANCE_COLLECTION === "terminalmanager") {
     return TerminalManager.findOne(obj);
   }
 
@@ -80,13 +66,12 @@ function initializeCanvas() {
 
   // If the Pie chart is selected construct serveral canvasses
   if (chart_type && chart_type.value === "Pie") {
-    var tags = getTags();
     var inner_html = "";
 
     // Construct a canvas for each tag which is checked in the filter
-    for (var i=0;i<tags.length;i++) {
-      if ($('#'+tags[i]).attr('checked')) {
-        inner_html += "<div class='pie'><canvas class='chart' id='chart_" + tags[i] + "' width='200px' height='200px'></canvas><p>" + tags[i] + "</p></div>";
+    for (var i=0;i<PERFORMANCE_TAGS.length;i++) {
+      if ($('#check_'+PERFORMANCE_TAGS[i].id).attr('checked')) {
+        inner_html += "<div class='pie'><canvas class='chart' id='chart_" + PERFORMANCE_TAGS[i].id + "' width='200px' height='200px'></canvas><p>" + PERFORMANCE_TAGS[i].label + "</p></div>";
       }
     }
 
@@ -111,51 +96,14 @@ function monthDifference(d1, d2) {
 }
 
 /*
- * Get the current selected form based on the URL.
- */
-function getForm() {
-  // Get the configuration
-  var config = Configuration.findOne();
-  if (config && config.forms) {
-
-    // Parse each form to find the correct one
-    for (var i=0;i<config.forms.length;i++) {
-      if (config.forms[i].name === SINGLEGRAPH_COLLECTION) {
-        return config.forms[i];
-      }
-    }
-  }
-
-  return undefined;
-}
-
-/*
- * This function returns all available variable tags
- * from a collection document.
- */
-function getTags() {
-  var tags = new Array();
-  var form = getForm();
-
-  // Get the field tags
-  for(var i=0;i<form.fields.length;i++) {
-    for(var j=0;j<form.fields[i].inputs.length;j++) {
-      tags.push(form.fields[i].inputs[j].name);
-    }
-  }
-
-  return tags;
-}
-
-/*
  * This function build the datasets for the Line and Bar charts based
  * on the given tags and data.
  */
-function buildDataset(tags, data) {
+function buildDataset(data) {
   var datasets = new Array();
 
-  for (var i=0;i<tags.length;i++) {
-    if ($('#'+tags[i]).attr('checked')) {
+  for (var i=0;i<PERFORMANCE_TAGS.length;i++) {
+    if ($('#check_'+PERFORMANCE_TAGS[i].id).attr('checked')) {
       var lightness = "0.0";
       if (document.getElementById('chart_type').value === "Bar")
         lightness = "0.5"
@@ -166,7 +114,7 @@ function buildDataset(tags, data) {
           strokeColor : "rgba(" + DEFAULT_COLORS[i] + ",1)",
           pointColor : "rgba(" + DEFAULT_COLORS[i] + ",1)",
           pointStrokeColor : "#fff",
-          data : data[tags[i]]
+          data : data[PERFORMANCE_TAGS[i].id]
         });
     }
   }
@@ -189,10 +137,9 @@ function renderGraph(start_month, start_year, end_month, end_year) {
     // Initialize arrays
     var data = new Object();
     var labels = new Array();
-    var tags = getTags();
-    for (var i=0;i<tags.length;i++) {
-      if ($('#'+tags[i]).attr('checked')) {
-        data[tags[i]] = new Array();
+    for (var i=0;i<PERFORMANCE_TAGS.length;i++) {
+      if ($('#check_'+PERFORMANCE_TAGS[i].id).attr('checked')) {
+        data[PERFORMANCE_TAGS[i].id] = new Array();
       }
     }
 
@@ -213,13 +160,22 @@ function renderGraph(start_month, start_year, end_month, end_year) {
       var ts1 = Number(moment("01-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
       var ts2 = Number(moment("28-"+month+"-"+year+" 23:00", "DD-MM-YYYY HH:mm").unix() * 1000);
       var doc = findOne({timestamp:{$gt:ts1,$lt:ts2}});
-      for (var j=0;j<tags.length;j++) {
-        if ($('#'+tags[j]).attr('checked')) {
-          if (doc && doc[tags[j]]) {
-            data[tags[j]].push(Number(doc[tags[j]]));
-          } else {
-            data[tags[j]].push(0);
-          }
+      for (var j=0;j<PERFORMANCE_TAGS.length;j++) {
+        if ($('#check_'+PERFORMANCE_TAGS[j].id).attr('checked')) {
+
+        	var total = 0;
+        	for(var k=0;k<PERFORMANCE_TAGS[j].names.length;k++) {
+        		if (doc && doc[PERFORMANCE_TAGS[j].names[k]]) {
+        			total += Number(doc[PERFORMANCE_TAGS[j].names[k]]);
+        		}
+        	}
+
+        	if (doc && doc[PERFORMANCE_SPLIT]) {
+        		total = total / Number(doc[PERFORMANCE_SPLIT]);
+        	}
+
+            data[PERFORMANCE_TAGS[j].id].push(total);
+
         }
       }
 
@@ -236,12 +192,12 @@ function renderGraph(start_month, start_year, end_month, end_year) {
     if (document.getElementById('chart_type').value === "Pie") {
 
       // Create one Pie for each checked tag in the filter
-      for (var i=0;i<tags.length;i++) {
-        if ($('#'+tags[i]).attr('checked')) {
+      for (var i=0;i<PERFORMANCE_TAGS.length;i++) {
+        if ($('#check_'+PERFORMANCE_TAGS[i].id).attr('checked')) {
 
           // Build the dataset
           var dataset = new Array();
-          var data_tag = data[tags[i]];
+          var data_tag = data[PERFORMANCE_TAGS[i].id];
           for (var j=0;j<data_tag.length;j++) {
             dataset.push({
               value: data_tag[j],
@@ -250,7 +206,7 @@ function renderGraph(start_month, start_year, end_month, end_year) {
           }
 
           //Get the context of the canvas element we want to select and display the pie
-          var ctx = document.getElementById("chart_" + tags[i]).getContext("2d");
+          var ctx = document.getElementById("chart_" + PERFORMANCE_TAGS[i].id).getContext("2d");
           new Chart(ctx).Doughnut(dataset, null);
         }
       }
@@ -261,7 +217,7 @@ function renderGraph(start_month, start_year, end_month, end_year) {
       // Build the dataset
       var data = {
         labels : labels,
-        datasets : buildDataset(tags, data)
+        datasets : buildDataset(data)
       };
 
       //Get the context of the canvas element we want to select
@@ -284,7 +240,7 @@ function renderGraph(start_month, start_year, end_month, end_year) {
 /*
  * This function contains all event handlers.
  */
-Template.singleGraphs.events({
+Template.performance.events({
   /*
    * Executed when clicking the Submit button
    */

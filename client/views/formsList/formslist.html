@@ -1,14 +1,35 @@
 <template name='formsList'>
-  <div class='wrapper row-fluid'>
+  <div class='wrapper formsList'>
     <div class='container'>
-      <div class='control-group'>
-        <div class='controls'>
-          <a href="{{pathFor 'data-entry'}}"><button class="btn btn-primary">New Month</button></a>
+
+      {{initialize}}
+
+      <div class="hero-unit">
+        <h1>{{formlabel}}</h1>
+
+        <div class="table">
+          <div class="row header"> 
+            <div class="cell"><span>Year</span></div>
+            <div class="cell"><span>Month</span></div>
+            <div class="cell"><span>Status</span></div>
+            <div class="cell"><span>Goal Reached</span></div>
+            <div class="cell"></div>
+          </div>
+
+          {{#each entry}}
+            <div class="row body">
+              <div class="cell"><span>{{toYear this.timestamp}}&nbsp;</span></div>
+              <div class="cell"><span>{{toMonth this.timestamp}}&nbsp;</span></div>
+              <div class="cell"><div class="status {{isComplete this}}">&nbsp;</div></div>
+              <div class="cell"><span>Unknown&nbsp;</span></div>
+              <div class="cell">
+                <button onclick="location.href='/entry/{{formid}}/{{this._id}}'" class="btn btn-info btn-lg editButton"><i class="icon-edit icon-white"></i></button>
+              </div>
+            </div>
+          {{/each}}
         </div>
       </div>
-      {{#each forms}}
-        {{> formItem}}
-      {{/each}}
+
     </div>
   </div>
 </template>
