@@ -111,27 +111,37 @@ function monthDifference(d1, d2) {
 }
 
 /*
+ * Get the current selected form based on the URL.
+ */
+function getForm() {
+  // Get the configuration
+  var config = Configuration.findOne();
+  if (config && config.forms) {
+
+    // Parse each form to find the correct one
+    for (var i=0;i<config.forms.length;i++) {
+      if (config.forms[i].name === SINGLEGRAPH_COLLECTION) {
+        return config.forms[i];
+      }
+    }
+  }
+
+  return undefined;
+}
+
+/*
  * This function returns all available variable tags
  * from a collection document.
  */
 function getTags() {
   var tags = new Array();
+  var form = getForm();
 
-  // Get one document
-  var doc = findOne();
-
-  // Parse each tag in the document
-  for(var name in doc) {
-    // Check if the tag is also in the ignored tags list.
-    // If so, we set the ignore boolean on true.
-    var ignore = false;
-    for(var i=0;i<SINGLEGRAPH_IGNORE_TAGS.length;i++) {
-      if (SINGLEGRAPH_IGNORE_TAGS[i] === name) { ignore = true; }
+  // Get the field tags
+  for(var i=0;i<form.fields.length;i++) {
+    for(var j=0;j<form.fields[i].inputs.length;j++) {
+      tags.push(form.fields[i].inputs[j].name);
     }
-
-    // If we should not ignore the tag, add it to the tags array
-    if (!ignore)
-      tags.push(name);
   }
 
   return tags;
