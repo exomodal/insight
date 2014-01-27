@@ -4,32 +4,6 @@ var FORM_EDIT_ID;
 var FORM_NAME;
 
 /*****************************************************************************
- * Collection function
- *****************************************************************************/
-
-/*
- * This function will execute the findOne query onto the
- * correct collection.
- */
-function findOne(collection, selector, options) {
-  if (!selector) { selector = {}; }
-  if (!options) { options = {}; }
-
-  // Do a findOne onto the correct collection
-  if (collection === "management") {
-    return Management.findOne(selector, options);
-  } else if (collection === "customerservice") {
-    return Customerservice.findOne(selector, options);
-  } else if (collection === "intermodalplanning") {
-    return Intermodalplanning.findOne(selector, options);
-  } else if (collection === "truckplanning") {
-    return Truckplanning.findOne(selector, options);
-  } else if (collection === "terminalmanager") {
-    return TerminalManager.findOne(selector, options);;
-  }
-}
-
-/*****************************************************************************
  * General Template functions
  *****************************************************************************/
 
@@ -127,7 +101,7 @@ function getMonth(timestamp) {
 }
 
 function resetInputFields() {
-  var doc = findOne(FORM_NAME, {_id:FORM_EDIT_ID}, {});
+  var doc = collection_findOne(FORM_NAME, {_id:FORM_EDIT_ID}, {});
 
   if (doc) {
     // Set the year and month field
