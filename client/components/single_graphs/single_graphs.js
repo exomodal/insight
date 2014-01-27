@@ -50,29 +50,33 @@ function buildDataset(tags, line_data, pie_data) {
   var datasets = new Array();
 
   for (var i=0;i<tags.length;i++) {
-    datasets.push(
-      {
-        name:tags[i],
-        data:line_data[tags[i]],
-        tooltip:{valueDecimals:2},
-      });
+    if (SINGLEGRAPH_IGNORE_TAGS.indexOf(tags[i]) === -1) {
+      datasets.push(
+        {
+          name:tags[i],
+          data:line_data[tags[i]],
+          tooltip:{valueDecimals:2},
+        });
+    }
   }
 
   var xAxis = 100;
   for (var i=0;i<tags.length;i++) {
-    datasets.push({
-      type:'pie',
-      name:tags[i],
-      data: pie_data[tags[i]],
-      center: [xAxis, 30],
-      size:100,
-      showInLegend:false,
-      dataLabels: {
-        enabled: false
-      }
-    });
+    if (SINGLEGRAPH_IGNORE_TAGS.indexOf(tags[i]) === -1) {
+      datasets.push({
+        type:'pie',
+        name:tags[i],
+        data: pie_data[tags[i]],
+        center: [xAxis, 30],
+        size:100,
+        showInLegend:false,
+        dataLabels: {
+          enabled: false
+        }
+      });
 
-    xAxis += 110;
+      xAxis += 110;
+    }
   }
 
   return datasets;
@@ -87,8 +91,10 @@ function renderGraph() {
   var pie_data = new Object();
   var tags = form_tags(SINGLEGRAPH_FORM);
   for (var i=0;i<tags.length;i++) {
-    line_data[tags[i]] = new Array();
-    pie_data[tags[i]] = new Array();
+    if (SINGLEGRAPH_IGNORE_TAGS.indexOf(tags[i]) === -1) {
+      line_data[tags[i]] = new Array();
+      pie_data[tags[i]] = new Array();
+    }
   }
 
   // Calculate timestamps
@@ -107,12 +113,14 @@ function renderGraph() {
 
     var doc = collection_findOne(form_name(SINGLEGRAPH_FORM), {timestamp:{$gt:ts1,$lt:ts2}});
     for (var j=0;j<tags.length;j++) {
-      if (doc && doc[tags[j]]) {
-        line_data[tags[j]].push([ts1 + 86400000, Number(doc[tags[j]])]);
-        pie_data[tags[j]].push([GLOBAL_MONTHS[month-1]+' '+year, Number(doc[tags[j]])]);
-      } else {
-        line_data[tags[j]].push([ts1 + 86400000, 0]);
-        pie_data[tags[j]].push([GLOBAL_MONTHS[month-1]+' '+year, 0]);
+      if (SINGLEGRAPH_IGNORE_TAGS.indexOf(tags[j]) === -1) {
+        if (doc && doc[tags[j]]) {
+          line_data[tags[j]].push([ts1 + 86400000, Number(doc[tags[j]])]);
+          pie_data[tags[j]].push([GLOBAL_MONTHS[month-1]+' '+year, Number(doc[tags[j]])]);
+        } else {
+          line_data[tags[j]].push([ts1 + 86400000, 0]);
+          pie_data[tags[j]].push([GLOBAL_MONTHS[month-1]+' '+year, 0]);
+        }
       }
     }
 
