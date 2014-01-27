@@ -7,6 +7,24 @@
       <div class="hero-unit">
         <h1>{{formlabel}}</h1>
 
+        {{#if isLocationBound}}
+          {{#if isLocalUser}}
+            <input type='hidden' id='static_location' value='{{userlocation}}'>
+          {{else}}
+            <div class='control-group'>
+              <label class='control-label'>Location:</label>
+              <div class='controls'>
+                <select id='static_location'>
+                  <option value=''>--Select Location--</option>
+                  {{#each location}}
+                    <option value='{{this.id}}'>{{this.name}}</option>
+                  {{/each}}
+                </select>
+              </div>
+            </div>
+          {{/if}}
+        {{/if}}
+
         <div class="table">
           <div class="row header"> 
             <div class="cell"><span>Year</span></div>
@@ -16,17 +34,8 @@
             <div class="cell"></div>
           </div>
 
-          {{#each entry}}
-            <div class="row body">
-              <div class="cell"><span>{{toYear this.timestamp}}&nbsp;</span></div>
-              <div class="cell"><span>{{toMonth this.timestamp}}&nbsp;</span></div>
-              <div class="cell"><div class="status {{isComplete this}}">&nbsp;</div></div>
-              <div class="cell"><span>Unknown&nbsp;</span></div>
-              <div class="cell">
-                <button onclick="location.href='/entry/{{formid}}/{{this._id}}'" class="btn btn-info btn-lg editButton"><i class="icon-edit icon-white"></i></button>
-              </div>
-            </div>
-          {{/each}}
+          <div id="body"></div>
+          
         </div>
       </div>
 

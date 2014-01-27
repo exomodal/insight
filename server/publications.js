@@ -23,10 +23,12 @@ Meteor.publish('customerservice', function (){
 });
 
 Meteor.publish('users', function (user){
-  if (user === undefined) {
+  if (user === null) {
+    return Meteor.users.find({_id:"none"});
+  } else if (user === undefined) {
   	return Meteor.users.find();
   } else if (user) {
     return Meteor.users.find({_id:user._id});
   }
-  return undefined;
+  return Meteor.users.find({_id:"none"});
 });

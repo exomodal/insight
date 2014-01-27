@@ -90,6 +90,31 @@ function monthDifference(d1, d2) {
     return months <= 0 ? 0 : months;
 }
 
+function formIsLocationBound(name) {
+	var config = Configuration.findOne();
+
+	if (config && config.forms) {
+		for (var i=0;i<config.forms.length;i++) {
+			if (config.forms[i].name === name) {
+				if (config.forms[i].locationbound) {
+					return config.forms[i].locationbound;
+				}
+				return false;
+			}
+		}
+	}
+	return false;
+}
+
+function getLocations() {
+	var config = Configuration.findOne();
+
+	if (config && config.locations) {
+		return config.locations;
+	}
+	return undefined;
+}
+
 Meteor.startup(function () {
 	// Calculate timestamps
     var start_timestamp = Number(moment("01-"+START_MONTH+"-"+START_YEAR+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
@@ -106,13 +131,31 @@ Meteor.startup(function () {
     		// Get the document for the month, if available
 	    	var ts1 = Number(moment("01-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
 	      	var ts2 = Number(moment("28-"+month+"-"+year+" 23:00", "DD-MM-YYYY HH:mm").unix() * 1000);
-	      	var doc = findOne(FORM_COLLECTIONS[j], {timestamp:{$gt:ts1,$lt:ts2}});
+	      	var locationBound = formIsLocationBound(FORM_COLLECTIONS[j]);
 
-	      	// If it does not exist for this month, create it
-	      	if (!doc) {
-	      		var timestamp = Number(moment("15-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
-	      		insert(FORM_COLLECTIONS[j], {"timestamp":timestamp});
-	      	}
+	      	if (locationBound) {
+	      		var locations = getLocations();
+	      		for (var k=0;k<locations.length;k++) {
+	      			// Get the document
+			      	var doc = findOne(FORM_COLLECTIONS[j], {location:locations[k].id, timestamp:{$gt:ts1,$lt:ts2}});
+
+			      	// If it does not exist for this month, create it
+			      	if (!doc) {
+			      		var timestamp = Number(moment("15-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
+			      		insert(FORM_COLLECTIONS[j], {"location":locations[k].id, "timestamp":timestamp});
+			      	}
+	      		}
+
+	      	} else {
+	      		// Get the document
+		      	var doc = findOne(FORM_COLLECTIONS[j], {timestamp:{$gt:ts1,$lt:ts2}});
+
+		      	// If it does not exist for this month, create it
+		      	if (!doc) {
+		      		var timestamp = Number(moment("15-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
+		      		insert(FORM_COLLECTIONS[j], {"timestamp":timestamp});
+		      	}
+		    }
     	}
 
     	// update the counter

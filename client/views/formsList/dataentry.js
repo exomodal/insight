@@ -40,7 +40,7 @@ Template.dataentry.initialize = function () {
 	if (this && this[0] && this[1]) {
     FORM_ID = Number(this[0]);
     FORM_EDIT_ID = this[1];
-    var form = getForm();
+    var form = form_get(FORM_ID);
     if (form && form.name) {
       FORM_NAME = form.name;
     }
@@ -62,30 +62,21 @@ Template.dataentry.formid = function () {
  * Get the form label
  */
 Template.dataentry.formlabel = function () {
-  var form = getForm();
-  if (form && form.label)
-  	return form.label;
-  return undefined;
+  return form_label(FORM_ID);
 }
 
 /*
  * Get the form fields
  */
 Template.dataentry.formfields = function () {
-  var form = getForm();
-  if (form && form.fields)
-  	return form.fields;
-  return undefined;
+  return form_fields(FORM_ID);
 }
 
 /*
  * Get the list of locations
  */
 Template.dataentry.location = function () {
-  var config = Configuration.findOne();
-  if (config && config.locations)
-    return config.locations;
-  return undefined;
+  return config_locations();
 }
 
 /*
@@ -93,52 +84,21 @@ Template.dataentry.location = function () {
  * If so the location field should be added.
  */
 Template.dataentry.isLocationBound = function () {
-  var form = getForm();
-  if (form && form.locationbound)
-    return form.locationbound;
-  return false;
+  return form_isLocationBound(FORM_ID);
 }
 
 /*
  * Returns whether the user does have a location
  */
 Template.dataentry.isLocalUser = function () {
-  var loggedInUser = Meteor.user();
-
-  if (loggedInUser && loggedInUser.roles && loggedInUser.roles[0]) {
-    var config = Configuration.findOne();
-    
-    if (config && config.roles) {
-      for (var i=0;i<config.roles.length;i++) {
-        if (config.roles[i].name === loggedInUser.roles[0] && config.roles[i].location) {
-          return true;
-        }
-      }
-
-    }
-  }
-  return false;
+  return user_isLocal();
 }
 
 /*
  * Get the user location
  */
-Template.dataentry.userLocation = function () {
-  var loggedInUser = Meteor.user();
-
-  if (loggedInUser && loggedInUser.roles && loggedInUser.roles[0]) {
-    var config = Configuration.findOne();
-    
-    if (config && config.roles) {
-      for (var i=0;i<config.roles.length;i++) {
-        if (config.roles[i].name === loggedInUser.roles[0] && config.roles[i].location) {
-          return config.roles[i].location;
-        }
-      }
-
-    }
-  }
-  return "";
+Template.dataentry.userlocation = function () {
+  return user_location();
 }
 
 /*
@@ -154,25 +114,6 @@ Template.dataentry.isEqual = function (a, b) {
  * General functions
  *****************************************************************************/
 
-/*
- * Get the current selected form based on the URL.
- */
-function getForm() {
-  // Get the configuration
-  var config = Configuration.findOne();
-  if (config && config.forms) {
-
-    // Parse each form to find the correct one
-    for (var i=0;i<config.forms.length;i++) {
-    	if (config.forms[i].id === FORM_ID) {
-    		return config.forms[i];
-    	}
-    }
-  }
-
-  return undefined;
-}
-
 function getYear(timestamp) {
   if (timestamp && timestamp !== 0)
     return moment.unix(timestamp/1000).year();
@@ -187,16 +128,18 @@ function getMonth(timestamp) {
 
 function resetInputFields() {
   var doc = findOne(FORM_NAME, {_id:FORM_EDIT_ID}, {});
-  
 
   if (doc) {
     // Set the year and month field
     document.getElementById('static_month').value = getMonth(doc.timestamp);
     document.getElementById('static_year').value = getYear(doc.timestamp);
-
+    if (form_isLocationBound(FORM_ID)) {
+      document.getElementById('static_location').value = doc.location;
+      document.getElementById('static_location').disabled = true;
+    }
 
     var tags = new Array();
-    var form = getForm();
+    var form = form_get(FORM_ID);
 
     // Get the field tags
     for(var i=0;i<form.fields.length;i++) {
@@ -226,7 +169,7 @@ Template.dataentry.events({
   'click .submit':function(e) {
   	var tags = new Array();
   	var values = new Array();
-  	var form = getForm();
+  	var form = form_get(FORM_ID);
 
   	// Get the field tags
   	for(var i=0;i<form.fields.length;i++) {

@@ -1,6 +1,6 @@
 // Variable declarations
-var LIST_MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 var LIST_ID;
+var LIST_LOCATION;
 
 /*****************************************************************************
  * General Template functions
@@ -28,107 +28,125 @@ Template.formsList.formid = function () {
  * Get the form label
  */
 Template.formsList.formlabel = function () {
-  var form = getForm();
-  if (form && form.label)
-  	return form.label;
-  return undefined;
+  return form_label(LIST_ID);
 }
 
 /*
- * Get all data entries from the collection
+ * Returns whether the form is location bound.
+ * If so the location field should be added.
  */
-Template.formsList.entry = function () {
-	var form = getForm();
+Template.formsList.isLocationBound = function () {
+  return form_isLocationBound(LIST_ID);
+}
+
+/*
+ * Returns whether the user does have a location.
+ */
+Template.formsList.isLocalUser = function () {
+  return user_isLocal();
+}
+
+/*
+ * Returns the location of the current user.
+ */
+Template.formsList.userlocation = function () {
+  return user_location();
+}
+
+/*
+ * Get the list of locations
+ */
+Template.formsList.location = function () {
+  return config_locations();
+}
+
+/*****************************************************************************
+ * General function
+ *****************************************************************************/
+
+function renderList() {
+  var form = form_get(LIST_ID);
   if (form && form.name) {
-  	return find(form.name, {}, {sort:{timestamp:-1}});
+    var selector = {};
+
+    // If the form is location bound we add the location to the find query
+    if (form_isLocationBound(LIST_ID)) {
+      var location = $('#static_location').val();
+      selector = {location:Number(location)};
+    }
+
+    // Get the entries from the collection
+    var cursor = collection_find(form.name, selector, {sort:{timestamp:-1}});
+    var inner_html = "";
+
+    // Add each entry to the display list
+    cursor.forEach(function (entry) {
+      inner_html += '<div class="row body">';
+      inner_html += '<div class="cell"><span>' + toYear(entry.timestamp) + '&nbsp;</span></div>';
+      inner_html += '<div class="cell"><span>' + toMonth(entry.timestamp) + '&nbsp;</span></div>';
+      inner_html += '<div class="cell"><div class="status ' + isComplete(entry) + '">&nbsp;</div></div>';
+      inner_html += '<div class="cell"><span>Unknown&nbsp;</span></div>';
+      inner_html += '<div class="cell">';
+      inner_html += '<button onclick="location.href=\'/entry/' + LIST_ID + '/' + entry._id + '\'" class="btn btn-info btn-lg editButton"><i class="icon-edit icon-white"></i></button>';
+      inner_html += '</div>';
+      inner_html += '</div>';
+    });
+
+    // Display the list
+    $('#body').html(inner_html);
   }
   return undefined;
-}
-
-/*
- * Convert timestamp into month
- */
-Template.formsList.isComplete = function(entry) {
-	var form = getForm();
-  if (form && form.fields) {
-
-  	// Parse each field
-  	for (var i=0;i<form.fields.length;i++) {
-  		// Parse each input
-	 		for (var j=0;j<form.fields[i].inputs.length;j++) {
-	 			if (!entry[form.fields[i].inputs[j].name] || entry[form.fields[i].inputs[j].name] === "") {
-	 				return "incomplete";
-	 			}
-	 		}
-  	}
- 	}
- 	return "complete";
 }
 
 /*
  * Convert timestamp into year
  */
-Template.formsList.toYear = function(timestamp) {
+function toYear(timestamp) {
   if (timestamp && timestamp !== 0)
-   	return moment.unix(timestamp/1000).year();
+    return moment.unix(timestamp/1000).year();
   return "";
 }
 
 /*
  * Convert timestamp into month
  */
-Template.formsList.toMonth = function(timestamp) {
+function toMonth(timestamp) {
   if (timestamp && timestamp !== 0)
-   	return LIST_MONTHS[moment.unix(timestamp/1000).month()];
+    return GLOBAL_MONTHS[moment.unix(timestamp/1000).month()];
   return "";
 }
 
-/*****************************************************************************
- * General functions
- *****************************************************************************/
-
 /*
- * Get the current selected form based on the URL.
+ * Check whether all fields are filled.
+ * If all fields are filled it returns complete else incomplete.
  */
-function getForm() {
-  // Get the configuration
-  var config = Configuration.findOne();
-  if (config && config.forms) {
+function isComplete(entry) {
+  var form = form_get(LIST_ID);
+  if (form && form.fields) {
 
-    // Parse each form to find the correct one
-    for (var i=0;i<config.forms.length;i++) {
-    	if (config.forms[i].id === LIST_ID) {
-    		return config.forms[i];
-    	}
+    // Parse each field
+    for (var i=0;i<form.fields.length;i++) {
+      // Parse each input
+      for (var j=0;j<form.fields[i].inputs.length;j++) {
+        if (!entry[form.fields[i].inputs[j].name] || entry[form.fields[i].inputs[j].name] === "") {
+          return "incomplete";
+        }
+      }
     }
   }
-
-  return undefined;
+  return "complete";
 }
 
 /*****************************************************************************
- * Collection function
+ * Template rendered function
  *****************************************************************************/
 
-/*
- * This function will execute the find query onto the
- * correct collection.
- */
-function find(collection, selector, options) {
-	// If object is undefined construct an empty query
-	if (!selector) { selector = {}; }
-	if (!options) { options = {}; }
+Template.formsList.rendered = function() {
+  // Set the onChange function for the location selector
+  $('#static_location').on('change', function(evt) {
+    renderList();
+  });
 
-	// Do a findOne onto the correct collection
-	if (collection === "management") {
-	  return Management.find(selector, options);
-	} else if (collection === "customerservice") {
-	  return Customerservice.find(selector, options);
-	} else if (collection === "intermodalplanning") {
-	  return Intermodalplanning.find(selector, options);
-	} else if (collection === "truckplanning") {
-	  return Truckplanning.find(selector, options);
-	} else if (collection === "terminalmanager") {
-	  return TerminalManager.find(selector, options);
-	}
+  // Render the list
+  renderList();
 }
