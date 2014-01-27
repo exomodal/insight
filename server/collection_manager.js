@@ -117,7 +117,7 @@ function getLocations() {
 
 Meteor.startup(function () {
 	// Calculate timestamps
-    var start_timestamp = Number(moment("01-"+START_MONTH+"-"+START_YEAR+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
+    var start_timestamp = Number(moment(START_MONTH+"-"+START_YEAR, "MM-YYYY").unix() * 1000);
     var end_timestamp = Number(moment());
 
 	// Parse each month
@@ -129,8 +129,8 @@ Meteor.startup(function () {
     	// For every month, parse each collection
     	for (var j=0;j<FORM_COLLECTIONS.length;j++) {
     		// Get the document for the month, if available
-	    	var ts1 = Number(moment("01-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
-	      	var ts2 = Number(moment("28-"+month+"-"+year+" 23:00", "DD-MM-YYYY HH:mm").unix() * 1000);
+	    	var ts1 = Number(moment(month+"-"+year, "MM-YYYY").unix() * 1000);
+	      	var ts2 = Number(moment((month+1)+"-"+year, "MM-YYYY").unix() * 1000);
 	      	var locationBound = formIsLocationBound(FORM_COLLECTIONS[j]);
 
 	      	if (locationBound) {
@@ -141,7 +141,7 @@ Meteor.startup(function () {
 
 			      	// If it does not exist for this month, create it
 			      	if (!doc) {
-			      		var timestamp = Number(moment("15-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
+			      		var timestamp = Number(moment("02-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
 			      		insert(FORM_COLLECTIONS[j], {"location":locations[k].id, "timestamp":timestamp});
 			      	}
 	      		}
@@ -152,7 +152,7 @@ Meteor.startup(function () {
 
 		      	// If it does not exist for this month, create it
 		      	if (!doc) {
-		      		var timestamp = Number(moment("15-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
+		      		var timestamp = Number(moment("02-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
 		      		insert(FORM_COLLECTIONS[j], {"timestamp":timestamp});
 		      	}
 		    }

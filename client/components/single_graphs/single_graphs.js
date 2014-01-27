@@ -1,10 +1,9 @@
 // Variable declarations
-var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-var DEFAULT_COLORS = ["220,0,0","0,220,0","0,0,220","220,220,0","0,220,220","220,0,220","110,0,0","0,110,0","0,0,110","110,110,0","0,110,110","110,0,110"];
-var DEFAULT_COLORS_HEX = ["#DC0000","#00DC00","#0000DC","#DCDC00","#00DCDC","#DC00DC","#6E0000","#006E00","#00006E","#6E6E00","#006E6E","#6E006E"];
-
-var SINGLEGRAPH_COLLECTION;
+var SINGLEGRAPH_FORM;
 var SINGLEGRAPH_IGNORE_TAGS;
+
+var START_MONTH = 1;
+var START_YEAR = 2008;
 
 /*****************************************************************************
  * General Template function
@@ -16,87 +15,21 @@ var SINGLEGRAPH_IGNORE_TAGS;
  */
 Template.singleGraphs.initialize = function() {
   // Check if the data is available
-  if (this.data && this.data.collection && this.data.ignore) {
-    SINGLEGRAPH_COLLECTION = this.data.collection;
+  if (this.data && this.data.form && this.data.ignore) {
+    SINGLEGRAPH_FORM = this.data.form;
     SINGLEGRAPH_IGNORE_TAGS = this.data.ignore;
 
   // If the data is not available we throw an error
   } else {
-    SINGLEGRAPH_COLLECTION = undefined;
+    SINGLEGRAPH_FORM = undefined;
     SINGLEGRAPH_IGNORE_TAGS = undefined;
     throwError("The graphs are not correctly initialized! Please contact the administrator.");
   }
 }
 
-/*
- * This function will return all available tags.
- */
-Template.singleGraphs.tags = function() {
-  return getTags();
-}
-
-/*****************************************************************************
- * Collection function
- *****************************************************************************/
-
-/*
- * This function will execute the findOne query onto the
- * correct collection.
- */
-function findOne(obj) {
-  // If object is undefined construct an empty query
-  if (!obj) { obj = {}; }
-
-  // Do a findOne onto the correct collection
-  if (SINGLEGRAPH_COLLECTION === "management") {
-    return Management.findOne(obj);
-  } else if (SINGLEGRAPH_COLLECTION === "customerservice") {
-    return Customerservice.findOne(obj);
-  } else if (SINGLEGRAPH_COLLECTION === "intermodalplanning") {
-    return Intermodalplanning.findOne(obj);
-  } else if (SINGLEGRAPH_COLLECTION === "truckplanning") {
-    return Truckplanning.findOne(obj);
-  } else if (SINGLEGRAPH_COLLECTION === "terminalmanager") {
-    return TerminalManager.findOne(obj);
-  }
-
-  // Did not found the initialized collection
-  throwError("The initialized collection does not exist! Please contact the administrator.");
-}
-
 /*****************************************************************************
  * General function
  *****************************************************************************/
-
-/*
- * This function constructs the canvas divs.
- * For a Line and Bar chart we only need one canvas, for
- * a Pie chart we need serveral canvasses.
- */
-function initializeCanvas() {
-  // Get the selected chart type and the chart display div
-  var chart_type = document.getElementById('chart_type');
-  var chart_display = document.getElementById('chartDisplay');
-
-  // If the Pie chart is selected construct serveral canvasses
-  if (chart_type && chart_type.value === "Pie") {
-    var tags = getTags();
-    var inner_html = "";
-
-    // Construct a canvas for each tag which is checked in the filter
-    for (var i=0;i<tags.length;i++) {
-      if ($('#'+tags[i]).attr('checked')) {
-        inner_html += "<div class='pie'><canvas class='chart' id='chart_" + tags[i] + "' width='200px' height='200px'></canvas><p>" + tags[i] + "</p></div>";
-      }
-    }
-
-    chart_display.innerHTML = inner_html;
-
-  // If a Line or Bar chart is selected we construct a single canvas
-  } else if (chart_display) {
-    chart_display.innerHTML = "<canvas class='chart' id='chart' width='800px' height='200px'></canvas>";
-  }
-}
 
 /*
  * This function calculates the amount of months between
@@ -111,190 +44,117 @@ function monthDifference(d1, d2) {
 }
 
 /*
- * Get the current selected form based on the URL.
+ * This function build the datasets.
  */
-function getForm() {
-  // Get the configuration
-  var config = Configuration.findOne();
-  if (config && config.forms) {
-
-    // Parse each form to find the correct one
-    for (var i=0;i<config.forms.length;i++) {
-      if (config.forms[i].name === SINGLEGRAPH_COLLECTION) {
-        return config.forms[i];
-      }
-    }
-  }
-
-  return undefined;
-}
-
-/*
- * This function returns all available variable tags
- * from a collection document.
- */
-function getTags() {
-  var tags = new Array();
-  var form = getForm();
-
-  // Get the field tags
-  for(var i=0;i<form.fields.length;i++) {
-    for(var j=0;j<form.fields[i].inputs.length;j++) {
-      tags.push(form.fields[i].inputs[j].name);
-    }
-  }
-
-  return tags;
-}
-
-/*
- * This function build the datasets for the Line and Bar charts based
- * on the given tags and data.
- */
-function buildDataset(tags, data) {
+function buildDataset(tags, line_data, pie_data) {
   var datasets = new Array();
 
   for (var i=0;i<tags.length;i++) {
-    if ($('#'+tags[i]).attr('checked')) {
-      var lightness = "0.0";
-      if (document.getElementById('chart_type').value === "Bar")
-        lightness = "0.5"
+    datasets.push(
+      {
+        name:tags[i],
+        data:line_data[tags[i]],
+        tooltip:{valueDecimals:2},
+      });
+  }
 
-      datasets.push(
-        {
-          fillColor : "rgba(" + DEFAULT_COLORS[i] + "," + lightness + ")",
-          strokeColor : "rgba(" + DEFAULT_COLORS[i] + ",1)",
-          pointColor : "rgba(" + DEFAULT_COLORS[i] + ",1)",
-          pointStrokeColor : "#fff",
-          data : data[tags[i]]
-        });
-    }
+  var xAxis = 100;
+  for (var i=0;i<tags.length;i++) {
+    datasets.push({
+      type:'pie',
+      name:tags[i],
+      data: pie_data[tags[i]],
+      center: [xAxis, 30],
+      size:100,
+      showInLegend:false,
+      dataLabels: {
+        enabled: false
+      }
+    });
+
+    xAxis += 110;
   }
 
   return datasets;
 }
 
 /*
- * This function handles the complete constuction and displaying
- * of the charts based on the filter input.
+ * This function handles the complete constuction and displaying of the charts.
  */
-function renderGraph(start_month, start_year, end_month, end_year) {
+function renderGraph() {
+  // Initialize arrays
+  var line_data = new Object();
+  var pie_data = new Object();
+  var tags = form_tags(SINGLEGRAPH_FORM);
+  for (var i=0;i<tags.length;i++) {
+    line_data[tags[i]] = new Array();
+    pie_data[tags[i]] = new Array();
+  }
 
-  // All filter input should be set
-  if (start_month !== '' && start_year !== '' && end_month !== '' && end_year !== '') {
+  // Calculate timestamps
+  var start_timestamp = Number(moment(START_MONTH+"-"+START_YEAR, "MM-YYYY").unix() * 1000);
+  var end_timestamp = Number(moment());
 
-    // Initialize the canvas(ses)
-    initializeCanvas();
+  // Parse each month
+  var month_count = monthDifference(start_timestamp, end_timestamp);
+  var month = Number(START_MONTH);
+  var year = Number(START_YEAR);
+  for (var i=0;i<month_count;i++) {
 
-    // Initialize arrays
-    var data = new Object();
-    var labels = new Array();
-    var tags = getTags();
-    for (var i=0;i<tags.length;i++) {
-      if ($('#'+tags[i]).attr('checked')) {
-        data[tags[i]] = new Array();
+    // Append data
+    var ts1 = Number(moment(month+"-"+year, "MM-YYYY").unix() * 1000);
+    var ts2 = Number(moment((month+1)+"-"+year, "MM-YYYY").unix() * 1000);
+
+    var doc = collection_findOne(form_name(SINGLEGRAPH_FORM), {timestamp:{$gt:ts1,$lt:ts2}});
+    for (var j=0;j<tags.length;j++) {
+      if (doc && doc[tags[j]]) {
+        line_data[tags[j]].push([ts1 + 86400000, Number(doc[tags[j]])]);
+        pie_data[tags[j]].push([GLOBAL_MONTHS[month-1]+' '+year, Number(doc[tags[j]])]);
+      } else {
+        line_data[tags[j]].push([ts1 + 86400000, 0]);
+        pie_data[tags[j]].push([GLOBAL_MONTHS[month-1]+' '+year, 0]);
       }
     }
 
-    // Calculate timestamps
-    var start_timestamp = Number(moment("01-"+start_month+"-"+start_year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
-    var end_timestamp = Number(moment("28-"+end_month+"-"+end_year+" 23:00", "DD-MM-YYYY HH:mm").unix() * 1000);
-
-    // Parse each month
-    var month_count = monthDifference(start_timestamp, end_timestamp);
-    var month = Number(start_month);
-    var year = Number(start_year);
-    for (var i=0;i<month_count;i++) {
-
-      // Append label
-      labels.push(year + " " + MONTHS[month-1]);
-
-      // Append data
-      var ts1 = Number(moment("01-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
-      var ts2 = Number(moment("28-"+month+"-"+year+" 23:00", "DD-MM-YYYY HH:mm").unix() * 1000);
-      var doc = findOne({timestamp:{$gt:ts1,$lt:ts2}});
-      for (var j=0;j<tags.length;j++) {
-        if ($('#'+tags[j]).attr('checked')) {
-          if (doc && doc[tags[j]]) {
-            data[tags[j]].push(Number(doc[tags[j]]));
-          } else {
-            data[tags[j]].push(0);
-          }
-        }
-      }
-
-      // update the counter
-      month++;
-      if (month > MONTHS.length) {
-        month = 1;
-        year++;
-      }
-    }
-
-    // Now we have all data and labels so we can display the chart
-    // A Pie chart uses difference datasets
-    if (document.getElementById('chart_type').value === "Pie") {
-
-      // Create one Pie for each checked tag in the filter
-      for (var i=0;i<tags.length;i++) {
-        if ($('#'+tags[i]).attr('checked')) {
-
-          // Build the dataset
-          var dataset = new Array();
-          var data_tag = data[tags[i]];
-          for (var j=0;j<data_tag.length;j++) {
-            dataset.push({
-              value: data_tag[j],
-              color: DEFAULT_COLORS_HEX[j]
-            });
-          }
-
-          //Get the context of the canvas element we want to select and display the pie
-          var ctx = document.getElementById("chart_" + tags[i]).getContext("2d");
-          new Chart(ctx).Doughnut(dataset, null);
-        }
-      }
-
-    // The Line and Bar chart uses the same dataset
-    } else {
-
-      // Build the dataset
-      var data = {
-        labels : labels,
-        datasets : buildDataset(tags, data)
-      };
-
-      //Get the context of the canvas element we want to select
-      var ctx = document.getElementById("chart").getContext("2d");
-
-      // Display the bar or line
-      if (document.getElementById('chart_type').value === "Bar") {
-        new Chart(ctx).Bar(data, null);
-      } else { 
-        new Chart(ctx).Line(data, null);
-      }
+    // update the counter
+    month++;
+    if (month > GLOBAL_MONTHS.length) {
+      month = 1;
+      year++;
     }
   }
+
+  // Now we have all data and labels so we can display the chart
+  $('#chartContainer').highcharts('StockChart', {
+    rangeSelector: {selected:4,inputDateFormat:'%b %Y',inputEditDateFormat:'%b %Y'},
+    xAxis:{type:'datetime',tickInterval:30*24*3600000,labels:{formatter:function() {return Highcharts.dateFormat("%b %Y", this.value);}}},
+    title: {text:''},
+    legend: {enabled:true},
+    chart: {
+      events: {
+        redraw: function(event) {
+          var chart = $('#chartContainer').highcharts();
+          console.log(chart.series[0]);
+          console.log(event.currentTarget.axes[0].userMin + ", " + event.currentTarget.axes[0].userMax);
+        }
+      }
+    },
+    tooltip: {
+      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+        '<td style="padding:0"><b>{point.y:.1f} EUR</b></td></tr>',
+      footerFormat: '</table>',
+      shared: true,
+      useHTML: true
+    },
+    series:buildDataset(tags, line_data, pie_data)
+  });
 }
 
 /*****************************************************************************
- * Template Event functions
+ * Template rendered function
  *****************************************************************************/
 
-/*
- * This function contains all event handlers.
- */
-Template.singleGraphs.events({
-  /*
-   * Executed when clicking the Submit button
-   */
-  'click .submit':function(e) {
-
-    var start_year = document.getElementById('start_year').value;
-    var start_month = document.getElementById('start_month').value;
-    var end_year = document.getElementById('end_year').value;
-    var end_month = document.getElementById('end_month').value;
-
-    renderGraph(start_month, start_year, end_month, end_year);
-  }
-});
+Template.singleGraphs.rendered = function ()  {
+  renderGraph();
+}
