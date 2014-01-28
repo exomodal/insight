@@ -207,8 +207,12 @@ function updatePieSeries() {
 
   // Update the datasets for pie graphs
   var chart = $('#chartContainer').highcharts();
-  for (var i=_.size(pie_data);i<(_.size(pie_data)*2);i++) {
-    chart.series[i].update({data:pie_data[tags[i-tags.length]]});
+  var j = 0;
+  for (var i=0;i<tags.length;i++) {
+    if (SINGLEGRAPH_IGNORE_TAGS.indexOf(tags[i]) === -1) {
+      chart.series[j+_.size(pie_data)].update({data:pie_data[tags[i]]});
+      j++;
+    }
   }
 }
 
