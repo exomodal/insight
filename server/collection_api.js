@@ -21,8 +21,13 @@ if (Meteor.isServer) {
         POST: function(obj) {
           console.log('INSERTION INTO Configuration');
           Configuration.remove({});
-          // Return true to insert the complete batch
-          return true;
+          Configuration.insert(obj);
+
+          // Update the records after a change in configuration
+          updateRecords();
+
+          // Dont return true; Otherwise it will insert the the full batch in addition.
+          return false;
         },
         GET: undefined,
         PUT: undefined,

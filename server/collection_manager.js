@@ -90,6 +90,24 @@ function monthDifference(d1, d2) {
     return months <= 0 ? 0 : months;
 }
 
+/*
+ * Convert timestamp into year
+ */
+function toYear(timestamp) {
+  if (timestamp && timestamp !== 0)
+    return moment.unix(timestamp/1000).year();
+  return "";
+}
+
+/*
+ * Convert timestamp into month
+ */
+function toMonth(timestamp) {
+  if (timestamp && timestamp !== 0)
+    return moment.unix(timestamp/1000).month()+1;
+  return "";
+}
+
 function formIsLocationBound(name) {
 	var config = Configuration.findOne();
 
@@ -115,7 +133,7 @@ function getLocations() {
 	return undefined;
 }
 
-Meteor.startup(function () {
+updateRecords = function() {
 	// Calculate timestamps
     var start_timestamp = Number(moment(START_MONTH+"-"+START_YEAR, "MM-YYYY").unix() * 1000);
     var end_timestamp = Number(moment());
@@ -165,5 +183,28 @@ Meteor.startup(function () {
 		   	year++;
 		}
     }
+}
+
+Meteor.startup(function () {
+	// Update the records on startup
+	updateRecords();
+
+	// Set up timer which will be triggered when entering a new month
+	// When entering the new month it will update the records, and so
+	// add the new month to the lists.
+  	var current_timestamp = Number(moment());
+  	var next_timestamp = Number(moment((toMonth(current_timestamp)+1)+"-"+toYear(current_timestamp), "MM-YYYY").unix() * 1000);
+  	var millis = next_timestamp - current_timestamp;
+
+  	// We split the time over two timers because one month is
+  	// too big for one timer
+	Meteor.setTimeout(function () {
+		Meteor.setTimeout(function () {
+			
+			// Update the records
+			updateRecords();
+
+		}, (millis / 2) + 3600000);
+	}, millis / 2);
 
 });

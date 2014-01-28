@@ -2,6 +2,24 @@
 
     {{initialize}}
 
-    <div id="chartContainer" style="width:100%;height:400px;margin:0 auto"></div>
+    {{#if isLocationBound}}
+        {{#if isLocalUser}}
+            <input type='hidden' id='static_location' value='{{userlocation}}'>
+        {{else}}
+        <div class='control-group'>
+            <label class='control-label'>Location:</label>
+            <div class='controls'>
+                <select id='static_location'>
+                    <option value=''>--Select Location--</option>
+                    {{#each location}}
+                        <option value='{{this.id}}'>{{this.name}}</option>
+                    {{/each}}
+                    </select>
+                </div>
+            </div>
+        {{/if}}
+    {{/if}}
+
+    <div id="chartContainer" class="chartContainer"></div>
 
 </template>
