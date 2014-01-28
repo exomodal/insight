@@ -1,0 +1,8 @@
+{
+    "name": "highstock",
+    "description": "A smart package that contains the charting library Highstock for the client.",
+    "author": "Mike Schäkermann",
+    "homepage": "https://github.com/mikeschaekermann/meteor-highcharts",
+    "version": "0.1.0",
+    "packages": {}
+}

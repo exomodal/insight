@@ -9,6 +9,9 @@
     "collection-api": {},
     "font-awesome": {},
     "chartjs": {},
-    "momentjs": {}
+    "momentjs": {},
+    "highstock": {
+      "path": "packages/meteor-highstock"
+    }
   }
 }

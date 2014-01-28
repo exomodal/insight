@@ -7,6 +7,6 @@
  * will be used by the SingleGraph template.
  */
 Template.revenues.initialize_graph = function() {
-  this.data = {"collection":"customerservice",
+  this.data = {"form":3,
               "ignore":["_id","location","timestamp"]};
 }

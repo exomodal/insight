@@ -25,6 +25,16 @@ form_get = function(id) {
 }
 
 /*
+ * Get the form name
+ */
+form_name = function (id) {
+  var form = form_get(id);
+  if (form && form.name)
+    return form.name;
+  return undefined;
+}
+
+/*
  * Returns whether the form is location bound.
  * If so the location field should be added.
  */
@@ -53,4 +63,22 @@ form_fields = function (id) {
   if (form && form.fields)
     return form.fields;
   return undefined;
+}
+
+/*
+ * This function returns all available variable tags
+ * from the form.
+ */
+form_tags = function (id) {
+  var tags = new Array();
+  var form = form_get(id);
+
+  // Get the field tags
+  for(var i=0;i<form.fields.length;i++) {
+    for(var j=0;j<form.fields[i].inputs.length;j++) {
+      tags.push(form.fields[i].inputs[j].name);
+    }
+  }
+
+  return tags;
 }

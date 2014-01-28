@@ -90,6 +90,24 @@ function monthDifference(d1, d2) {
     return months <= 0 ? 0 : months;
 }
 
+/*
+ * Convert timestamp into year
+ */
+function toYear(timestamp) {
+  if (timestamp && timestamp !== 0)
+    return moment.unix(timestamp/1000).year();
+  return "";
+}
+
+/*
+ * Convert timestamp into month
+ */
+function toMonth(timestamp) {
+  if (timestamp && timestamp !== 0)
+    return moment.unix(timestamp/1000).month()+1;
+  return "";
+}
+
 function formIsLocationBound(name) {
 	var config = Configuration.findOne();
 
@@ -115,9 +133,9 @@ function getLocations() {
 	return undefined;
 }
 
-Meteor.startup(function () {
+updateRecords = function() {
 	// Calculate timestamps
-    var start_timestamp = Number(moment("01-"+START_MONTH+"-"+START_YEAR+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
+    var start_timestamp = Number(moment(START_MONTH+"-"+START_YEAR, "MM-YYYY").unix() * 1000);
     var end_timestamp = Number(moment());
 
 	// Parse each month
@@ -129,8 +147,8 @@ Meteor.startup(function () {
     	// For every month, parse each collection
     	for (var j=0;j<FORM_COLLECTIONS.length;j++) {
     		// Get the document for the month, if available
-	    	var ts1 = Number(moment("01-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
-	      	var ts2 = Number(moment("28-"+month+"-"+year+" 23:00", "DD-MM-YYYY HH:mm").unix() * 1000);
+	    	var ts1 = Number(moment(month+"-"+year, "MM-YYYY").unix() * 1000);
+	      	var ts2 = Number(moment((month+1)+"-"+year, "MM-YYYY").unix() * 1000);
 	      	var locationBound = formIsLocationBound(FORM_COLLECTIONS[j]);
 
 	      	if (locationBound) {
@@ -141,7 +159,7 @@ Meteor.startup(function () {
 
 			      	// If it does not exist for this month, create it
 			      	if (!doc) {
-			      		var timestamp = Number(moment("15-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
+			      		var timestamp = Number(moment("02-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
 			      		insert(FORM_COLLECTIONS[j], {"location":locations[k].id, "timestamp":timestamp});
 			      	}
 	      		}
@@ -152,7 +170,7 @@ Meteor.startup(function () {
 
 		      	// If it does not exist for this month, create it
 		      	if (!doc) {
-		      		var timestamp = Number(moment("15-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
+		      		var timestamp = Number(moment("02-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
 		      		insert(FORM_COLLECTIONS[j], {"timestamp":timestamp});
 		      	}
 		    }
@@ -165,5 +183,28 @@ Meteor.startup(function () {
 		   	year++;
 		}
     }
+}
+
+Meteor.startup(function () {
+	// Update the records on startup
+	updateRecords();
+
+	// Set up timer which will be triggered when entering a new month
+	// When entering the new month it will update the records, and so
+	// add the new month to the lists.
+  	var current_timestamp = Number(moment());
+  	var next_timestamp = Number(moment((toMonth(current_timestamp)+1)+"-"+toYear(current_timestamp), "MM-YYYY").unix() * 1000);
+  	var millis = next_timestamp - current_timestamp;
+
+  	// We split the time over two timers because one month is
+  	// too big for one timer
+	Meteor.setTimeout(function () {
+		Meteor.setTimeout(function () {
+			
+			// Update the records
+			updateRecords();
+
+		}, (millis / 2) + 3600000);
+	}, millis / 2);
 
 });
