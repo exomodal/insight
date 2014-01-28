@@ -1,7 +1,6 @@
 // Variable declarations
 var SINGLEGRAPH_FORM;
 var SINGLEGRAPH_IGNORE_TAGS;
-var SINGLEGRAPH_RENDERED;
 
 var START_MONTH = 1;
 var START_YEAR = 2008;
@@ -22,7 +21,6 @@ Template.singleGraphs.initialize = function() {
   if (this.data && this.data.form && this.data.ignore) {
     SINGLEGRAPH_FORM = this.data.form;
     SINGLEGRAPH_IGNORE_TAGS = this.data.ignore;
-    SINGLEGRAPH_RENDERED = false;
 
   // If the data is not available we throw an error
   } else {
@@ -290,12 +288,9 @@ function renderGraph() {
       type: 'spline',
       events: {
         load: function(event) {
-          if (!SINGLEGRAPH_RENDERED) {
-            START_PIE = event.currentTarget.axes[0].userMin;
-            END_PIE = event.currentTarget.axes[0].userMax;
-            Session.set("UPDATE_PIE", event.currentTarget.axes[0].userMin);
-            SINGLEGRAPH_RENDERED = true;
-          }
+          START_PIE = event.currentTarget.axes[0].userMin;
+          END_PIE = event.currentTarget.axes[0].userMax;
+          Session.set("UPDATE_PIE", event.currentTarget.axes[0].userMin);
         }
       }
     },

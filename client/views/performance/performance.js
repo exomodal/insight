@@ -1,87 +1,29 @@
 // Variable declarations
-var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-var DEFAULT_COLORS = ["220,0,0","0,220,0","0,0,220","220,220,0","0,220,220","220,0,220","110,0,0","0,110,0","0,0,110","110,110,0","0,110,110","110,0,110"];
-var DEFAULT_COLORS_HEX = ["#DC0000","#00DC00","#0000DC","#DCDC00","#00DCDC","#DC00DC","#6E0000","#006E00","#00006E","#6E6E00","#006E6E","#6E006E"];
+var PERFORMANCE_TAGS = {"label":"Moves per Manhour",
+                        "form":6,
+                        "names":["bargemovesin","bargemovesout","truckmovesin","truckmovesout","trainmovesin","trainmovesout"],
+                        "split":"terminalmanhours"};
 
-var PERFORMANCE_TAGS = [{"id":4,"label":"All Moves","names":["bargemovesin","bargemovesout","truckmovesin","truckmovesout","trainmovesin","trainmovesout"]}];
+var PERFORMANCE_START_MONTH = 1;
+var PERFORMANCE_START_YEAR = 2008;
 
-var PERFORMANCE_SPLIT = "terminalmanhours";
-
-var PERFORMANCE_COLLECTION = "terminalmanager";	// Will be located in PERFORMANCE_TAGS later
-var PERFORMANCE_IGNORE_TAGS;
+var PERFORMANCE_START_PIE;
+var PERFORMANCE_END_PIE;
 
 /*****************************************************************************
  * General Template function
  *****************************************************************************/
 
 /*
- * This function will return all available tags.
+ * This function will initialize the default variables
+ * which should be located in the 'this.data' variable.
  */
-Template.performance.tags = function() {
-  return PERFORMANCE_TAGS;
-}
-
-/*****************************************************************************
- * Collection function
- *****************************************************************************/
-
-/*
- * This function will execute the findOne query onto the
- * correct collection.
- */
-function findOne(obj) {
-  // If object is undefined construct an empty query
-  if (!obj) { obj = {}; }
-
-  // Do a findOne onto the correct collection
-  if (PERFORMANCE_COLLECTION === "management") {
-    return Management.findOne(obj);
-  } else if (PERFORMANCE_COLLECTION === "customerservice") {
-    return Customerservice.findOne(obj);
-  } else if (PERFORMANCE_COLLECTION === "intermodalplanning") {
-    return Intermodalplanning.findOne(obj);
-  } else if (PERFORMANCE_COLLECTION === "truckplanning") {
-    return Truckplanning.findOne(obj);
-  } else if (PERFORMANCE_COLLECTION === "terminalmanager") {
-    return TerminalManager.findOne(obj);
-  }
-
-  // Did not found the initialized collection
-  throwError("The initialized collection does not exist! Please contact the administrator.");
+Template.performance.initialize = function() {
 }
 
 /*****************************************************************************
  * General function
  *****************************************************************************/
-
-/*
- * This function constructs the canvas divs.
- * For a Line and Bar chart we only need one canvas, for
- * a Pie chart we need serveral canvasses.
- */
-function initializeCanvas() {
-  // Get the selected chart type and the chart display div
-  var chart_type = document.getElementById('chart_type');
-  var chart_display = document.getElementById('chartDisplay');
-
-  // If the Pie chart is selected construct serveral canvasses
-  if (chart_type && chart_type.value === "Pie") {
-    var inner_html = "";
-
-    // Construct a canvas for each tag which is checked in the filter
-    for (var i=0;i<PERFORMANCE_TAGS.length;i++) {
-      if ($('#check_'+PERFORMANCE_TAGS[i].id).attr('checked')) {
-        inner_html += "<div class='pie'><canvas class='chart' id='chart_" + PERFORMANCE_TAGS[i].id + "' width='200px' height='200px'></canvas><p>" + PERFORMANCE_TAGS[i].label + "</p></div>";
-      }
-    }
-
-    chart_display.innerHTML = inner_html;
-
-  // If a Line or Bar chart is selected we construct a single canvas
-  } else if (chart_display) {
-    chart_display.innerHTML = "<canvas class='chart' id='chart' width='800px' height='200px'></canvas>";
-  }
-}
 
 /*
  * This function calculates the amount of months between
@@ -96,26 +38,70 @@ function monthDifference(d1, d2) {
 }
 
 /*
- * This function build the datasets for the Line and Bar charts based
- * on the given tags and data.
+ * Convert timestamp into year
  */
-function buildDataset(data) {
+function toYear(timestamp) {
+  if (timestamp && timestamp !== 0)
+    return moment.unix(timestamp/1000).year();
+  return "";
+}
+
+/*
+ * Convert timestamp into month
+ */
+function toMonth(timestamp) {
+  if (timestamp && timestamp !== 0)
+    return GLOBAL_MONTHS[moment.unix(timestamp/1000).month()];
+  return "";
+}
+
+/*
+ * Convert timestamp into month
+ */
+function toMonthNumber(timestamp) {
+  if (timestamp && timestamp !== 0)
+    return moment.unix(timestamp/1000).month() + 1;
+  return "";
+}
+
+/*
+ * This function build the datasets.
+ */
+function buildSeries(line_data) {
   var datasets = new Array();
 
-  for (var i=0;i<PERFORMANCE_TAGS.length;i++) {
-    if ($('#check_'+PERFORMANCE_TAGS[i].id).attr('checked')) {
-      var lightness = "0.0";
-      if (document.getElementById('chart_type').value === "Bar")
-        lightness = "0.5"
-
+  // Build the datasets for line and bar graphs
+  if (form_isLocationBound(PERFORMANCE_TAGS.form)) {
+    var locations = config_locations();
+    for (var i=0;i<locations.length;i++) {
       datasets.push(
         {
-          fillColor : "rgba(" + DEFAULT_COLORS[i] + "," + lightness + ")",
-          strokeColor : "rgba(" + DEFAULT_COLORS[i] + ",1)",
-          pointColor : "rgba(" + DEFAULT_COLORS[i] + ",1)",
-          pointStrokeColor : "#fff",
-          data : data[PERFORMANCE_TAGS[i].id]
+          name:PERFORMANCE_TAGS.label + " " + locations[i].name,
+          data:line_data[PERFORMANCE_TAGS.label + " " + locations[i].name],
+          tooltip:{valueDecimals:2},
         });
+    }
+  }
+
+  // Build the datasets for empty pie graphs.
+  // We will fill the pie data later.
+  var xAxis = 100;
+  if (form_isLocationBound(PERFORMANCE_TAGS.form)) {
+    var locations = config_locations();
+    for (var i=0;i<locations.length;i++) {
+      datasets.push({
+        type:'pie',
+        name:PERFORMANCE_TAGS.label + " " + locations[i].name,
+        data: [],
+        center: [xAxis, 30],
+        size:100,
+        showInLegend:false,
+        dataLabels: {
+          enabled: false
+        }
+      });
+
+      xAxis += 110;
     }
   }
 
@@ -123,134 +109,195 @@ function buildDataset(data) {
 }
 
 /*
- * This function handles the complete constuction and displaying
- * of the charts based on the filter input.
+ * This function updates the pie series data based
+ * on the selected start and end date (navigator).
  */
-function renderGraph(start_month, start_year, end_month, end_year) {
+function updatePieSeries() {
+  // Initialize arrays
+  var pie_data = new Object();
 
-  // All filter input should be set
-  if (start_month !== '' && start_year !== '' && end_month !== '' && end_year !== '') {
-
-    // Initialize the canvas(ses)
-    initializeCanvas();
-
-    // Initialize arrays
-    var data = new Object();
-    var labels = new Array();
-    for (var i=0;i<PERFORMANCE_TAGS.length;i++) {
-      if ($('#check_'+PERFORMANCE_TAGS[i].id).attr('checked')) {
-        data[PERFORMANCE_TAGS[i].id] = new Array();
-      }
+  if (form_isLocationBound(PERFORMANCE_TAGS.form)) {
+    var locations = config_locations();
+    for (var i=0;i<locations.length;i++) {
+      pie_data[PERFORMANCE_TAGS.label + " " + locations[i].name] = new Array();
     }
+  } else {
+    pie_data[PERFORMANCE_TAGS.label] = new Array();
+  }
 
-    // Calculate timestamps
-    var start_timestamp = Number(moment("01-"+start_month+"-"+start_year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
-    var end_timestamp = Number(moment("28-"+end_month+"-"+end_year+" 23:00", "DD-MM-YYYY HH:mm").unix() * 1000);
+  // Calculate timestamps
+  var start_timestamp = Number(moment(PERFORMANCE_START_PIE).unix() * 1000);
+  var end_timestamp = Number(moment(PERFORMANCE_END_PIE).unix() * 1000);
 
-    // Parse each month
-    var month_count = monthDifference(start_timestamp, end_timestamp);
-    var month = Number(start_month);
-    var year = Number(start_year);
-    for (var i=0;i<month_count;i++) {
+  // Parse each month
+  var month_count = monthDifference(start_timestamp, end_timestamp);
+  var month = moment.unix(start_timestamp/1000).month() + 1;
+  var year = moment.unix(start_timestamp/1000).year();
+  for (var i=0;i<month_count;i++) {
 
-      // Append label
-      labels.push(year + " " + MONTHS[month-1]);
+    // Append data
+    var ts1 = Number(moment(month+"-"+year, "MM-YYYY").unix() * 1000);
+    var ts2 = Number(moment((month+1)+"-"+year, "MM-YYYY").unix() * 1000);
 
-      // Append data
-      var ts1 = Number(moment("01-"+month+"-"+year+" 00:00", "DD-MM-YYYY HH:mm").unix() * 1000);
-      var ts2 = Number(moment("28-"+month+"-"+year+" 23:00", "DD-MM-YYYY HH:mm").unix() * 1000);
-      var doc = findOne({timestamp:{$gt:ts1,$lt:ts2}});
-      for (var j=0;j<PERFORMANCE_TAGS.length;j++) {
-        if ($('#check_'+PERFORMANCE_TAGS[j].id).attr('checked')) {
+    // Get the actual data
+    if (form_isLocationBound(PERFORMANCE_TAGS.form)) {
+      var locations = config_locations();
+      for (var k=0;k<locations.length;k++) {
 
-        	var total = 0;
-        	for(var k=0;k<PERFORMANCE_TAGS[j].names.length;k++) {
-        		if (doc && doc[PERFORMANCE_TAGS[j].names[k]]) {
-        			total += Number(doc[PERFORMANCE_TAGS[j].names[k]]);
-        		}
-        	}
+        var doc = collection_findOne(form_name(PERFORMANCE_TAGS.form), {location:Number(locations[k].id), timestamp:{$gt:ts1,$lt:ts2}});
+        var total = 0;
 
-        	if (doc && doc[PERFORMANCE_SPLIT]) {
-        		total = total / Number(doc[PERFORMANCE_SPLIT]);
-        	}
-
-            data[PERFORMANCE_TAGS[j].id].push(total);
-
-        }
-      }
-
-      // update the counter
-      month++;
-      if (month > MONTHS.length) {
-        month = 1;
-        year++;
-      }
-    }
-
-    // Now we have all data and labels so we can display the chart
-    // A Pie chart uses difference datasets
-    if (document.getElementById('chart_type').value === "Pie") {
-
-      // Create one Pie for each checked tag in the filter
-      for (var i=0;i<PERFORMANCE_TAGS.length;i++) {
-        if ($('#check_'+PERFORMANCE_TAGS[i].id).attr('checked')) {
-
-          // Build the dataset
-          var dataset = new Array();
-          var data_tag = data[PERFORMANCE_TAGS[i].id];
-          for (var j=0;j<data_tag.length;j++) {
-            dataset.push({
-              value: data_tag[j],
-              color: DEFAULT_COLORS_HEX[j]
-            });
+        for (var j=0;j<PERFORMANCE_TAGS.names.length;j++) {
+          if (doc && doc[PERFORMANCE_TAGS.names[j]]) {
+            total += Number(doc[PERFORMANCE_TAGS.names[j]]);
           }
-
-          //Get the context of the canvas element we want to select and display the pie
-          var ctx = document.getElementById("chart_" + PERFORMANCE_TAGS[i].id).getContext("2d");
-          new Chart(ctx).Doughnut(dataset, null);
         }
+
+        if (doc && doc[PERFORMANCE_TAGS.split]) {
+          total = total / Number(doc[PERFORMANCE_TAGS.split]);
+        }
+
+        pie_data[PERFORMANCE_TAGS.label + " " + locations[k].name].push([GLOBAL_MONTHS[month-1]+' '+year, total]);
+
       }
+    } //else {
+      //var doc = collection_findOne(form_name(PERFORMANCE_TAGS.form), {timestamp:{$gt:ts1,$lt:ts2}});
+    //}
+    
+    
 
-    // The Line and Bar chart uses the same dataset
-    } else {
+    // update the counter
+    month++;
+    if (month > GLOBAL_MONTHS.length) {
+      month = 1;
+      year++;
+    }
+  }
 
-      // Build the dataset
-      var data = {
-        labels : labels,
-        datasets : buildDataset(data)
-      };
-
-      //Get the context of the canvas element we want to select
-      var ctx = document.getElementById("chart").getContext("2d");
-
-      // Display the bar or line
-      if (document.getElementById('chart_type').value === "Bar") {
-        new Chart(ctx).Bar(data, null);
-      } else { 
-        new Chart(ctx).Line(data, null);
-      }
+  // Update the datasets for pie graphs
+  var chart = $('#chartContainer').highcharts();
+  var j = 0;
+  if (form_isLocationBound(PERFORMANCE_TAGS.form)) {
+    var locations = config_locations();
+    for (var i=0;i<locations.length;i++) {
+      chart.series[j+_.size(pie_data)].update({data:pie_data[PERFORMANCE_TAGS.label + " " + locations[i].name]});
+      j++;
     }
   }
 }
 
+/*
+ * This function handles the complete constuction and displaying of the charts.
+ */
+function renderGraph() {
+  // Initialize arrays
+  var line_data = new Object();
+
+  if (form_isLocationBound(PERFORMANCE_TAGS.form)) {
+    var locations = config_locations();
+    for (var i=0;i<locations.length;i++) {
+      line_data[PERFORMANCE_TAGS.label + " " + locations[i].name] = new Array();
+    }
+  } else {
+    line_data[PERFORMANCE_TAGS.label] = new Array();
+  }
+  
+  // Calculate timestamps
+  var start_timestamp = Number(moment(PERFORMANCE_START_MONTH+"-"+PERFORMANCE_START_YEAR, "MM-YYYY").unix() * 1000);
+  var end_timestamp = Number(moment());
+
+  // Parse each month
+  var month_count = monthDifference(start_timestamp, end_timestamp);
+  var month = Number(PERFORMANCE_START_MONTH);
+  var year = Number(PERFORMANCE_START_YEAR);
+  for (var i=0;i<month_count;i++) {
+
+    // Append data
+    var ts1 = Number(moment(month+"-"+year, "MM-YYYY").unix() * 1000);
+    var ts2 = Number(moment((month+1)+"-"+year, "MM-YYYY").unix() * 1000);
+
+    if (form_isLocationBound(PERFORMANCE_TAGS.form)) {
+      var locations = config_locations();
+      for (var k=0;k<locations.length;k++) {
+
+        var doc = collection_findOne(form_name(PERFORMANCE_TAGS.form), {location:Number(locations[k].id), timestamp:{$gt:ts1,$lt:ts2}});
+        var total = 0;
+
+        for (var j=0;j<PERFORMANCE_TAGS.names.length;j++) {
+          if (doc && doc[PERFORMANCE_TAGS.names[j]]) {
+            total += Number(doc[PERFORMANCE_TAGS.names[j]]);
+          }
+        }
+
+        if (doc && doc[PERFORMANCE_TAGS.split]) {
+          total = total / Number(doc[PERFORMANCE_TAGS.split]);
+        }
+
+        line_data[PERFORMANCE_TAGS.label + " " + locations[k].name].push([ts1 + 86400000, total]);
+
+      }
+    } //else {
+      //var doc = collection_findOne(form_name(PERFORMANCE_TAGS.form), {timestamp:{$gt:ts1,$lt:ts2}});
+    //}
+
+    // update the counter
+    month++;
+    if (month > GLOBAL_MONTHS.length) {
+      month = 1;
+      year++;
+    }
+  }
+
+  // Now we have all data and labels so we can display the chart
+  $('#chartContainer').highcharts('StockChart', {
+    rangeSelector: {selected:4,inputDateFormat:'%b %Y',inputEditDateFormat:'%b %Y'},
+    xAxis:{
+      events: {
+        setExtremes: function(e) {
+          if (e.min !== PERFORMANCE_START_PIE || e.max !== PERFORMANCE_END_PIE) {
+            PERFORMANCE_START_PIE = e.min;
+            PERFORMANCE_END_PIE = e.max;
+            Session.set("UPDATE_PERFORMANCE_PIE", e.min + e.max);
+          }
+        }
+      },
+      type:'datetime',tickInterval:30*24*3600000,labels:{formatter:function() {return Highcharts.dateFormat("%b %Y", this.value);}}},
+    title: {text:''},
+    legend: {enabled:true},
+    chart: {
+      type: 'spline',
+      events: {
+        load: function(event) {
+          PERFORMANCE_START_PIE = event.currentTarget.axes[0].userMin;
+          PERFORMANCE_END_PIE = event.currentTarget.axes[0].userMax;
+          Session.set("UPDATE_PERFORMANCE_PIE", event.currentTarget.axes[0].userMin);
+        }
+      }
+    },
+    tooltip: {
+      headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+      pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+        '<td style="padding:0"><b>{point.y:.1f} EUR</b></td></tr>',
+      footerFormat: '</table>',
+      shared: true,
+      useHTML: true
+    },
+    series:buildSeries(line_data)
+  });
+
+  // Update the pie series
+  updatePieSeries();
+}
+
 /*****************************************************************************
- * Template Event functions
+ * Template rendered function
  *****************************************************************************/
 
-/*
- * This function contains all event handlers.
- */
-Template.performance.events({
-  /*
-   * Executed when clicking the Submit button
-   */
-  'click .submit':function(e) {
+Template.performance.rendered = function ()  {
+  renderGraph();
 
-    var start_year = document.getElementById('start_year').value;
-    var start_month = document.getElementById('start_month').value;
-    var end_year = document.getElementById('end_year').value;
-    var end_month = document.getElementById('end_month').value;
-
-    renderGraph(start_month, start_year, end_month, end_year);
-  }
-});
+  Deps.autorun(function () {
+    var update = Session.get("UPDATE_PERFORMANCE_PIE");
+    updatePieSeries();
+  });
+}
