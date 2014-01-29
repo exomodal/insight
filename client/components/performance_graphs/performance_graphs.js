@@ -1,5 +1,5 @@
 // Variable declarations
-var PERFORMANCE_TAGS = {"label":"Moves per Manhour",
+/*var PERFORMANCE_TAGS = {"label":"Moves per Manhour",
                         "unit":"M/h",
                         "locationbound":true,
                         "count":[
@@ -7,8 +7,8 @@ var PERFORMANCE_TAGS = {"label":"Moves per Manhour",
                         ],
                         "split":[
                           {"form":6,"names":["terminalmanhours"]}
-                        ]};
-/*var PERFORMANCE_TAGS = {"label":"KwH Factor",
+                        ]};*/
+var PERFORMANCE_TAGS = {"label":"KwH Factor",
                         "unit":"",
                         "locationbound":false,
                         "count":[
@@ -18,7 +18,7 @@ var PERFORMANCE_TAGS = {"label":"Moves per Manhour",
                         ],
                         "split":[
                           {"form":6,"names":["terminalmanhours"]}
-                        ]};*/
+                        ]};
 
 var PERFORMANCE_START_MONTH = 1;
 var PERFORMANCE_START_YEAR = 2008;
