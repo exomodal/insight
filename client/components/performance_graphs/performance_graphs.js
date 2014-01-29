@@ -1,24 +1,5 @@
 // Variable declarations
-/*var PERFORMANCE_TAGS = {"label":"Moves per Manhour",
-                        "unit":"M/h",
-                        "locationbound":true,
-                        "count":[
-                          {"form":6,"names":["bargemovesin","bargemovesout","truckmovesin","truckmovesout","trainmovesin","trainmovesout"]}
-                        ],
-                        "split":[
-                          {"form":6,"names":["terminalmanhours"]}
-                        ]};*/
-var PERFORMANCE_TAGS = {"label":"KwH Factor",
-                        "unit":"",
-                        "locationbound":false,
-                        "count":[
-                          {"form":1,"names":["officekwh"]},
-                          {"form":4,"names":["kwhrail"]},
-                          {"form":6,"names":["cranekwh","terminalkwh"]}
-                        ],
-                        "split":[
-                          {"form":6,"names":["terminalmanhours"]}
-                        ]};
+var PERFORMANCE_TAGS;
 
 var PERFORMANCE_START_MONTH = 1;
 var PERFORMANCE_START_YEAR = 2008;
@@ -34,7 +15,7 @@ var PERFORMANCE_START_YEAR = 2008;
 Template.performanceGraphs.initialize = function() {
   // Check if the data is available
   if (this.data) {
-    //PERFORMANCE_TAGS = this.data;
+    PERFORMANCE_TAGS = this.data;
 
   // If the data is not available we throw an error
   } else {
