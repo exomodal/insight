@@ -177,7 +177,7 @@ function renderGraph() {
   // Now we have all data and labels so we can display the chart
   $('#chartContainer').highcharts('StockChart', {
     rangeSelector: {selected:4,inputDateFormat:'%b %Y',inputEditDateFormat:'%b %Y'},
-    xAxis:{type:'datetime',tickInterval:30*24*3600000,labels:{formatter:function() {return Highcharts.dateFormat("%b %Y", this.value);}}},
+    xAxis:{gridLineWidth:1,type:'datetime',tickInterval:30*24*3600000,labels:{formatter:function() {return Highcharts.dateFormat("%b %Y", this.value);}}},
     title: {text:''},
     legend: {enabled:true},
     chart: {type: 'spline'},
