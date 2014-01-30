@@ -1,8 +1,30 @@
 // Variable declarations
 var PERFORMANCE_TAGS;
-
 var PERFORMANCE_START_MONTH = 1;
 var PERFORMANCE_START_YEAR = 2008;
+
+
+/*****************************************************************************
+ * Variable function
+ *****************************************************************************/
+
+/*
+ * This function will set the tags variable for the
+ * current graph. This is necessary because this template could
+ * be loaded serveral times in one page which will overwrite
+ * its data.
+ */
+function setVariables(parent) {
+  // Check if the data is available
+  if (parent.data) {
+    PERFORMANCE_TAGS = parent.data;
+
+  // If the data is not available we throw an error
+  } else {
+    PERFORMANCE_TAGS = undefined;
+    throwError("The graphs are not correctly initialized! Please contact the administrator.");
+  }
+}
 
 /*****************************************************************************
  * General Template function
@@ -13,14 +35,16 @@ var PERFORMANCE_START_YEAR = 2008;
  * which should be located in the 'this.data' variable.
  */
 Template.performanceGraphs.initialize = function() {
-  // Check if the data is available
-  if (this.data) {
-    PERFORMANCE_TAGS = this.data;
+  // First set the variables
+  setVariables(this);
 
-  // If the data is not available we throw an error
+  // Now return a div which will display the graph
+  // The graph name is added to be sure the graph is not duplicated
+  // and will not be overwritten by other graph data
+  if (this.data) {
+    return '<div class="chartContainer' + PERFORMANCE_TAGS.name + '"></div>';
   } else {
-    PERFORMANCE_TAGS = undefined;
-    throwError("The graphs are not correctly initialized! Please contact the administrator.");
+    return '';
   }
 }
 
@@ -41,7 +65,7 @@ function monthDifference(d1, d2) {
 }
 
 /*
- * Convert timestamp into year
+ * Convert timestamp into year.
  */
 function toYear(timestamp) {
   if (timestamp && timestamp !== 0)
@@ -50,7 +74,7 @@ function toYear(timestamp) {
 }
 
 /*
- * Convert timestamp into month
+ * Convert timestamp into month.
  */
 function toMonth(timestamp) {
   if (timestamp && timestamp !== 0)
@@ -59,38 +83,33 @@ function toMonth(timestamp) {
 }
 
 /*
- * Convert timestamp into month
- */
-function toMonthNumber(timestamp) {
-  if (timestamp && timestamp !== 0)
-    return moment.unix(timestamp/1000).month() + 1;
-  return "";
-}
-
-/*
- * This function build the datasets.
+ * This function constructs the datasets.
  */
 function buildSeries(line_data) {
   var datasets = new Array();
 
   // Build the datasets for line and bar graphs
-  if (PERFORMANCE_TAGS.locationbound) {
-    var locations = config_locations();
-    for (var i=0;i<locations.length;i++) {
+  for (var i=0;i<PERFORMANCE_TAGS.graphs.length;i++) {
+    if (PERFORMANCE_TAGS.graphs[i].locationbound) {
+      var locations = config_locations();
+      for (var j=0;j<locations.length;j++) {
+        datasets.push(
+          {
+            type:PERFORMANCE_TAGS.graphs[i].type,
+            name:PERFORMANCE_TAGS.graphs[i].label + " " + locations[j].name,
+            data:line_data[PERFORMANCE_TAGS.graphs[i].label + " " + locations[j].name],
+            tooltip:{valueDecimals:2},
+          });
+      }
+    } else {
       datasets.push(
         {
-          name:PERFORMANCE_TAGS.label + " " + locations[i].name,
-          data:line_data[PERFORMANCE_TAGS.label + " " + locations[i].name],
-          tooltip:{valueDecimals:2},
+          type:PERFORMANCE_TAGS.graphs[i].type,
+          name:PERFORMANCE_TAGS.graphs[i].label,
+          data:line_data[PERFORMANCE_TAGS.graphs[i].label],
+          tooltip:{valueDecimals:2}
         });
     }
-  } else {
-    datasets.push(
-      {
-        name:PERFORMANCE_TAGS.label,
-        data:line_data[PERFORMANCE_TAGS.label],
-        tooltip:{valueDecimals:2}
-      });
   }
 
   return datasets;
@@ -114,13 +133,16 @@ function countValues(doc, names) {
 function renderGraph() {
   // Initialize arrays
   var line_data = new Object();
-  if (PERFORMANCE_TAGS.locationbound) {
-    var locations = config_locations();
-    for (var i=0;i<locations.length;i++) {
-      line_data[PERFORMANCE_TAGS.label + " " + locations[i].name] = new Array();
+
+  for (var i=0;i<PERFORMANCE_TAGS.graphs.length;i++) {
+    if (PERFORMANCE_TAGS.graphs[i].locationbound) {
+      var locations = config_locations();
+      for (var j=0;j<locations.length;j++) {
+        line_data[PERFORMANCE_TAGS.graphs[i].label + " " + locations[j].name] = new Array();
+      }
+    } else {
+      line_data[PERFORMANCE_TAGS.graphs[i].label] = new Array();
     }
-  } else {
-    line_data[PERFORMANCE_TAGS.label] = new Array();
   }
   
   // Calculate timestamps
@@ -137,23 +159,67 @@ function renderGraph() {
     var ts1 = Number(moment(month+"-"+year, "MM-YYYY").unix() * 1000);
     var ts2 = Number(moment((month+1)+"-"+year, "MM-YYYY").unix() * 1000);
 
-    if (PERFORMANCE_TAGS.locationbound) {
+    for (var m=0;m<PERFORMANCE_TAGS.graphs.length;m++) {
+      if (PERFORMANCE_TAGS.graphs[m].locationbound) {
 
-      var locations = config_locations();
-      for (var k=0;k<locations.length;k++) {
+        var locations = config_locations();
+        for (var k=0;k<locations.length;k++) {
+          var totalCount = 0;
+          var totalSplit = 0;
+
+          // Count all tag values of every form
+          for (var j=0;j<PERFORMANCE_TAGS.graphs[m].count.length;j++) {
+            var doc = collection_findOne(form_name(PERFORMANCE_TAGS.graphs[m].count[j].form), {location:Number(locations[k].id), timestamp:{$gt:ts1,$lt:ts2}});
+            totalCount += countValues(doc, PERFORMANCE_TAGS.graphs[m].count[j].names);
+          }
+
+          // Count all tag values of every form
+          for (var j=0;j<PERFORMANCE_TAGS.graphs[m].split.length;j++) {
+            var doc = collection_findOne(form_name(PERFORMANCE_TAGS.graphs[m].split[j].form), {location:Number(locations[k].id), timestamp:{$gt:ts1,$lt:ts2}});
+            totalSplit += countValues(doc, PERFORMANCE_TAGS.graphs[m].split[j].names);
+          }
+
+          // Split if posible
+          if (totalSplit > 0) {
+            totalCount = totalCount / totalSplit;
+          }
+
+          line_data[PERFORMANCE_TAGS.graphs[m].label + " " + locations[k].name].push([ts1 + 86400000, totalCount]);
+        }
+      } else {
         var totalCount = 0;
         var totalSplit = 0;
 
         // Count all tag values of every form
-        for (var j=0;j<PERFORMANCE_TAGS.count.length;j++) {
-          var doc = collection_findOne(form_name(PERFORMANCE_TAGS.count[j].form), {location:Number(locations[k].id), timestamp:{$gt:ts1,$lt:ts2}});
-          totalCount += countValues(doc, PERFORMANCE_TAGS.count[j].names);
+        for (var j=0;j<PERFORMANCE_TAGS.graphs[m].count.length;j++) {
+          // If one of the forms is location bound
+          if (form_isLocationBound(PERFORMANCE_TAGS.graphs[m].count[j].form)) {
+            var locations = config_locations();
+            for (var l=0;l<locations.length;l++) {
+              var doc = collection_findOne(form_name(PERFORMANCE_TAGS.graphs[m].count[j].form), {location:Number(locations[l].id), timestamp:{$gt:ts1,$lt:ts2}});
+              totalCount += countValues(doc, PERFORMANCE_TAGS.graphs[m].count[j].names);
+            }
+          // Else we do not need to parse each location
+          } else {
+            var doc = collection_findOne(form_name(PERFORMANCE_TAGS.graphs[m].count[j].form), {timestamp:{$gt:ts1,$lt:ts2}});
+            totalCount += countValues(doc, PERFORMANCE_TAGS.graphs[m].count[j].names);
+          }
         }
 
         // Count all tag values of every form
-        for (var j=0;j<PERFORMANCE_TAGS.split.length;j++) {
-          var doc = collection_findOne(form_name(PERFORMANCE_TAGS.split[j].form), {location:Number(locations[k].id), timestamp:{$gt:ts1,$lt:ts2}});
-          totalSplit += countValues(doc, PERFORMANCE_TAGS.split[j].names);
+        for (var j=0;j<PERFORMANCE_TAGS.graphs[m].split.length;j++) {
+          // If one of the forms is location bound
+          if (form_isLocationBound(PERFORMANCE_TAGS.graphs[m].split[j].form)) {
+            var locations = config_locations();
+            for (var l=0;l<locations.length;l++) {
+              var doc = collection_findOne(form_name(PERFORMANCE_TAGS.graphs[m].split[j].form), {location:Number(locations[l].id), timestamp:{$gt:ts1,$lt:ts2}});
+              totalSplit += countValues(doc, PERFORMANCE_TAGS.graphs[m].split[j].names);
+            }
+          // Else we do not need to parse each location
+          } else {
+            var doc = collection_findOne(form_name(PERFORMANCE_TAGS.graphs[m].split[j].form), {timestamp:{$gt:ts1,$lt:ts2}});
+            totalSplit += countValues(doc, PERFORMANCE_TAGS.graphs[m].split[j].names);
+          }
         }
 
         // Split if posible
@@ -161,50 +227,8 @@ function renderGraph() {
           totalCount = totalCount / totalSplit;
         }
 
-        line_data[PERFORMANCE_TAGS.label + " " + locations[k].name].push([ts1 + 86400000, totalCount]);
+        line_data[PERFORMANCE_TAGS.graphs[m].label].push([ts1 + 86400000, totalCount]);
       }
-    } else {
-      var totalCount = 0;
-      var totalSplit = 0;
-
-      // Count all tag values of every form
-      for (var j=0;j<PERFORMANCE_TAGS.count.length;j++) {
-        // If one of the forms is location bound
-        if (form_isLocationBound(PERFORMANCE_TAGS.count[j].form)) {
-          var locations = config_locations();
-          for (var l=0;l<locations.length;l++) {
-            var doc = collection_findOne(form_name(PERFORMANCE_TAGS.count[j].form), {location:Number(locations[l].id), timestamp:{$gt:ts1,$lt:ts2}});
-            totalCount += countValues(doc, PERFORMANCE_TAGS.count[j].names);
-          }
-        // Else we do not need to parse each location
-        } else {
-          var doc = collection_findOne(form_name(PERFORMANCE_TAGS.count[j].form), {timestamp:{$gt:ts1,$lt:ts2}});
-          totalCount += countValues(doc, PERFORMANCE_TAGS.count[j].names);
-        }
-      }
-
-      // Count all tag values of every form
-      for (var j=0;j<PERFORMANCE_TAGS.split.length;j++) {
-        // If one of the forms is location bound
-        if (form_isLocationBound(PERFORMANCE_TAGS.split[j].form)) {
-          var locations = config_locations();
-          for (var l=0;l<locations.length;l++) {
-            var doc = collection_findOne(form_name(PERFORMANCE_TAGS.split[j].form), {location:Number(locations[l].id), timestamp:{$gt:ts1,$lt:ts2}});
-            totalSplit += countValues(doc, PERFORMANCE_TAGS.split[j].names);
-          }
-        // Else we do not need to parse each location
-        } else {
-          var doc = collection_findOne(form_name(PERFORMANCE_TAGS.split[j].form), {timestamp:{$gt:ts1,$lt:ts2}});
-          totalSplit += countValues(doc, PERFORMANCE_TAGS.split[j].names);
-        }
-      }
-
-      // Split if posible
-      if (totalSplit > 0) {
-        totalCount = totalCount / totalSplit;
-      }
-
-      line_data[PERFORMANCE_TAGS.label].push([ts1 + 86400000, totalCount]);
     }
 
     // update the counter
@@ -216,12 +240,11 @@ function renderGraph() {
   }
 
   // Now we have all data and labels so we can display the chart
-  $('#chartContainer').highcharts('StockChart', {
+  $('.chartContainer' + PERFORMANCE_TAGS.name).highcharts('StockChart', {
     rangeSelector: {selected:4,inputDateFormat:'%b %Y',inputEditDateFormat:'%b %Y'},
     xAxis:{gridLineWidth:1,type:'datetime',tickInterval:30*24*3600000,labels:{formatter:function() {return Highcharts.dateFormat("%b %Y", this.value);}}},
-    title: {text:''},
+    title: {text:PERFORMANCE_TAGS.label},
     legend: {enabled:true},
-    chart: {type: 'spline'},
     tooltip: {
       headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
       pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
@@ -239,5 +262,9 @@ function renderGraph() {
  *****************************************************************************/
 
 Template.performanceGraphs.rendered = function ()  {
+  // Set the variables
+  setVariables(this.data);
+
+  // Render the graph
   renderGraph();
 }
