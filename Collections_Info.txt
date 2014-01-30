@@ -40,3 +40,17 @@ Collecties en velden:
 NOTE: Voor meer informatie wat er in de emails of password objecten staat kunt u de volgende commando gebruiken wanneer u ingelogd bent: Meteor.users.find()
 
 
+Performance Graphs
+    - name: String;
+    - label: string;
+    - unit: String;
+    - graphs: Object Array
+        - label: String;
+        - type: String;                 (Can be spline or column)
+        - locationbound: boolean;       (If true: when a graph is location bound it will give seperate lines)
+        - count: Object Array
+            - form: integer;
+            - names: String Array;
+        - split: Object Array
+            - form: integer;
+            - names: String Array;

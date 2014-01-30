@@ -6,6 +6,24 @@ var START_MONTH = 1;
 var START_YEAR = 2008;
 
 /*****************************************************************************
+ * General function
+ *****************************************************************************/
+
+function setVariables(parent) {
+  // Check if the data is available
+  if (parent.data && parent.data.form && parent.data.ignore) {
+    SINGLEGRAPH_FORM = parent.data.form;
+    SINGLEGRAPH_IGNORE_TAGS = parent.data.ignore;
+
+  // If the data is not available we throw an error
+  } else {
+    SINGLEGRAPH_FORM = undefined;
+    SINGLEGRAPH_IGNORE_TAGS = undefined;
+    throwError("The graphs are not correctly initialized! Please contact the administrator.");
+  }
+}
+
+/*****************************************************************************
  * General Template function
  *****************************************************************************/
 
@@ -14,17 +32,7 @@ var START_YEAR = 2008;
  * which should be located in the 'this.data' variable.
  */
 Template.singleGraphs.initialize = function() {
-  // Check if the data is available
-  if (this.data && this.data.form && this.data.ignore) {
-    SINGLEGRAPH_FORM = this.data.form;
-    SINGLEGRAPH_IGNORE_TAGS = this.data.ignore;
-
-  // If the data is not available we throw an error
-  } else {
-    SINGLEGRAPH_FORM = undefined;
-    SINGLEGRAPH_IGNORE_TAGS = undefined;
-    throwError("The graphs are not correctly initialized! Please contact the administrator.");
-  }
+  setVariables(this);
 }
 
 /*
@@ -175,7 +183,7 @@ function renderGraph() {
   }
 
   // Now we have all data and labels so we can display the chart
-  $('#chartContainer').highcharts('StockChart', {
+  $('.chartContainer2').highcharts('StockChart', {
     rangeSelector: {selected:4,inputDateFormat:'%b %Y',inputEditDateFormat:'%b %Y'},
     xAxis:{gridLineWidth:1,type:'datetime',tickInterval:30*24*3600000,labels:{formatter:function() {return Highcharts.dateFormat("%b %Y", this.value);}}},
     title: {text:''},
@@ -198,6 +206,7 @@ function renderGraph() {
  *****************************************************************************/
 
 Template.singleGraphs.rendered = function ()  {
+  setVariables(this.data);
   renderGraph();
 
   $('#static_location').on('change', function() {
