@@ -9,6 +9,9 @@
   width: 95%;
 }
 
+h1 {
+  padding-bottom:20px;
+}
 /*
  * Input field placeholders
  */
