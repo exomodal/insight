@@ -110,6 +110,14 @@
   background-color:green;
 }
 
+.revenues .chart {
+  margin-bottom:80px;
+}
+.moves .chart {
+  margin-bottom:80px;
+}
+
+
 .singleGraph .chartContainer {
   width:100%;
   height:400px;
