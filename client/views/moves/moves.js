@@ -93,3 +93,57 @@ Template.moves.graph_4 = function() {
 
   	return Template['performanceGraphs'](data);
 }
+
+Template.moves.graph_5 = function() {
+	var data = {"data":
+	  	{"name":"alltotalmoves",
+	  	"label":"All Total Moves",
+	  	"unit":"",
+	  	"graphs":[
+	  		{"label":"Total Moves Barge",
+	  		"type":"column",
+	  		"locationbound":false,
+	  		"count":[{"form":6,"names":["bargemovesin","bargemovesout"]}],
+	  		"split":[]},
+	  		{"label":"Total Moves Truck",
+	  		"type":"column",
+	  		"locationbound":false,
+	  		"count":[{"form":6,"names":["truckmovesin","truckmovesout"]}],
+	  		"split":[]},
+	  		{"label":"Total Moves Train",
+	  		"type":"column",
+	  		"locationbound":false,
+	  		"count":[{"form":6,"names":["trainmovesin","trainmovesout"]}],
+	  		"split":[]},
+	  	]}
+  	};
+
+  	return Template['performanceGraphs'](data);
+}
+
+Template.moves.graph_6 = function() {
+	var data = {"data":
+	  	{"name":"alltotalteus",
+	  	"label":"All Total TEU",
+	  	"unit":"",
+	  	"graphs":[
+	  		{"label":"Total TEU Barge",
+	  		"type":"column",
+	  		"locationbound":false,
+	  		"count":[{"form":6,"names":["bargeteusin","bargeteusout"]}],
+	  		"split":[]},
+	  		{"label":"Total TEU Truck",
+	  		"type":"column",
+	  		"locationbound":false,
+	  		"count":[{"form":6,"names":["truckteusin","truckteusout"]}],
+	  		"split":[]},
+	  		{"label":"Total TEU Train",
+	  		"type":"column",
+	  		"locationbound":false,
+	  		"count":[{"form":6,"names":["trainteusin","trainteusout"]}],
+	  		"split":[]},
+	  	]}
+  	};
+
+  	return Template['performanceGraphs'](data);
+}
