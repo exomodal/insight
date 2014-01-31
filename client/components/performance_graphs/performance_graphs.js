@@ -115,13 +115,17 @@ function buildSeries(line_data) {
   return datasets;
 }
 
-function countValues(doc, names) {
+function countValues(doc, names, pre) {
   var total = 0;
 
   for (var k=0;k<names.length;k++) {
     if (doc && doc[names[k]]) {
       total += Number(doc[names[k]]);
     }
+  }
+
+  if (pre) {
+    total = total * pre;
   }
 
   return total;
@@ -170,13 +174,13 @@ function renderGraph() {
           // Count all tag values of every form
           for (var j=0;j<PERFORMANCE_TAGS.graphs[m].count.length;j++) {
             var doc = collection_findOne(form_name(PERFORMANCE_TAGS.graphs[m].count[j].form), {location:Number(locations[k].id), timestamp:{$gt:ts1,$lt:ts2}});
-            totalCount += countValues(doc, PERFORMANCE_TAGS.graphs[m].count[j].names);
+            totalCount += countValues(doc, PERFORMANCE_TAGS.graphs[m].count[j].names, PERFORMANCE_TAGS.graphs[m].count[j].pre);
           }
 
           // Count all tag values of every form
           for (var j=0;j<PERFORMANCE_TAGS.graphs[m].split.length;j++) {
             var doc = collection_findOne(form_name(PERFORMANCE_TAGS.graphs[m].split[j].form), {location:Number(locations[k].id), timestamp:{$gt:ts1,$lt:ts2}});
-            totalSplit += countValues(doc, PERFORMANCE_TAGS.graphs[m].split[j].names);
+            totalSplit += countValues(doc, PERFORMANCE_TAGS.graphs[m].split[j].names, PERFORMANCE_TAGS.graphs[m].split[j].pre);
           }
 
           // Split if posible
@@ -197,13 +201,12 @@ function renderGraph() {
             var locations = config_locations();
             for (var l=0;l<locations.length;l++) {
               var doc = collection_findOne(form_name(PERFORMANCE_TAGS.graphs[m].count[j].form), {location:Number(locations[l].id), timestamp:{$gt:ts1,$lt:ts2}});
-              totalCount += countValues(doc, PERFORMANCE_TAGS.graphs[m].count[j].names);
+              totalCount += countValues(doc, PERFORMANCE_TAGS.graphs[m].count[j].names, PERFORMANCE_TAGS.graphs[m].count[j].pre);
             }
           // Else we do not need to parse each location
           } else {
             var doc = collection_findOne(form_name(PERFORMANCE_TAGS.graphs[m].count[j].form), {timestamp:{$gt:ts1,$lt:ts2}});
-            totalCount += countValues(doc, PERFORMANCE_TAGS.graphs[m].count[j].names);
-          }
+            totalCount += countValues(doc, PERFORMANCE_TAGS.graphs[m].count[j].names, PERFORMANCE_TAGS.graphs[m].count[j].pre);          }
         }
 
         // Count all tag values of every form
@@ -213,12 +216,12 @@ function renderGraph() {
             var locations = config_locations();
             for (var l=0;l<locations.length;l++) {
               var doc = collection_findOne(form_name(PERFORMANCE_TAGS.graphs[m].split[j].form), {location:Number(locations[l].id), timestamp:{$gt:ts1,$lt:ts2}});
-              totalSplit += countValues(doc, PERFORMANCE_TAGS.graphs[m].split[j].names);
+              totalSplit += countValues(doc, PERFORMANCE_TAGS.graphs[m].split[j].names, PERFORMANCE_TAGS.graphs[m].split[j].pre);
             }
           // Else we do not need to parse each location
           } else {
             var doc = collection_findOne(form_name(PERFORMANCE_TAGS.graphs[m].split[j].form), {timestamp:{$gt:ts1,$lt:ts2}});
-            totalSplit += countValues(doc, PERFORMANCE_TAGS.graphs[m].split[j].names);
+            totalSplit += countValues(doc, PERFORMANCE_TAGS.graphs[m].split[j].names, PERFORMANCE_TAGS.graphs[m].split[j].pre);
           }
         }
 
@@ -241,7 +244,7 @@ function renderGraph() {
 
   // Now we have all data and labels so we can display the chart
   $('.chartContainer' + PERFORMANCE_TAGS.name).highcharts('StockChart', {
-    rangeSelector: {selected:4,inputDateFormat:'%b %Y',inputEditDateFormat:'%b %Y'},
+    rangeSelector: {selected:5,inputDateFormat:'%b %Y',inputEditDateFormat:'%b %Y'},
     xAxis:{gridLineWidth:1,type:'datetime',tickInterval:30*24*3600000,labels:{formatter:function() {return Highcharts.dateFormat("%b %Y", this.value);}}},
     title: {text:PERFORMANCE_TAGS.label},
     legend: {enabled:true},
