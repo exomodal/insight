@@ -147,3 +147,25 @@ Template.moves.graph_6 = function() {
 
   	return Template['performanceGraphs'](data);
 }
+
+Template.moves.graph_7 = function() {
+	var data = {"data":
+	  	{"name":"totalmovesteuterminal",
+	  	"label":"Total Moves/TEU Terminal",
+	  	"unit":"",
+	  	"graphs":[
+	  		{"label":"Total Moves",
+	  		"type":"spline",
+	  		"locationbound":true,
+	  		"count":[{"form":6,"names":["bargemovesin","bargemovesout","truckmovesin","truckmovesout","trainmovesin","trainmovesout"]}],
+	  		"split":[]},
+	  		{"label":"Total TEU",
+	  		"type":"spline",
+	  		"locationbound":true,
+	  		"count":[{"form":6,"names":["bargeteusin","bargeteusout","truckteusin","truckteusout","trainteusin","trainteusout"]}],
+	  		"split":[]}
+	  	]}
+  	};
+
+  	return Template['performanceGraphs'](data);
+}
