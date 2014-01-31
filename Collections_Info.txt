@@ -51,6 +51,8 @@ Performance Graphs
         - count: Object Array
             - form: integer;
             - names: String Array;
+            - pre: integer/double;      (Optional: the value will be multiplied by this number before doing the split)
         - split: Object Array
             - form: integer;
             - names: String Array;
+            - pre: integer/double;      (Optional: the value will be multiplied by this number before doing the split)
