@@ -168,10 +168,9 @@ Template.dataentry.events({
       	if (error) {
         	throwError(error.reason);
         }
+        // Go back to the lists
+        Router.go("/forms/" + FORM_ID);
    	});
-
-    // Go back to the lists
-    return true;
   }
 });
 
