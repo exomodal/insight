@@ -37,11 +37,21 @@ Template.revenues.graph_1 = function() {
 	  		"locationbound":false,
 	  		"count":[{"form":3,"names":["revenuemargin"]}],
 	  		"split":[]},
+	  		{"label":"Revenue Storage",
+	  		"type":"column",
+	  		"locationbound":false,
+	  		"count":[{"form":3,"names":["revenuestorage"]}],
+	  		"split":[]},
+	  		{"label":"Revenue BAF",
+	  		"type":"column",
+	  		"locationbound":false,
+	  		"count":[{"form":3,"names":["revenuebaf"]}],
+	  		"split":[]},
 	  		{"label":"Revenue Other",
 	  		"type":"column",
 	  		"locationbound":false,
 	  		"count":[{"form":3,"names":["revenueother"]}],
-	  		"split":[]}
+	  		"split":[]},
 	  	]}
   	};
 
@@ -57,7 +67,7 @@ Template.revenues.graph_2 = function() {
 	  		{"label":"Total",
 	  		"type":"spline",
 	  		"locationbound":false,
-	  		"count":[{"form":3,"names":["revenuebarge","revenuehandling","revenueinlandtruck","revenuemargin","revenueother","revenuetruck"]}],
+	  		"count":[{"form":3,"names":["revenuebarge","revenuehandling","revenueinlandtruck","revenuemargin","revenueother","revenuetruck","revenuestorage","revenuebaf"]}],
 	  		"split":[]}
 	  	]}
   	};
@@ -74,12 +84,12 @@ Template.revenues.graph_3 = function() {
 	  		{"label":"Revenue per Move",
 	  		"type":"spline",
 	  		"locationbound":false,
-	  		"count":[{"form":3,"names":["revenuebarge","revenuehandling","revenueinlandtruck","revenuemargin","revenueother","revenuetruck"]}],
+	  		"count":[{"form":3,"names":["revenuebarge","revenuehandling","revenueinlandtruck","revenuemargin","revenueother","revenuetruck","revenuestorage","revenuebaf"]}],
 	  		"split":[{"form":6,"names":["bargemovesin","bargemovesout","truckmovesin","truckmovesout","trainmovesin","trainmovesout"]}]},
 	  		{"label":"Revenue per TEU",
 	  		"type":"spline",
 	  		"locationbound":false,
-	  		"count":[{"form":3,"names":["revenuebarge","revenuehandling","revenueinlandtruck","revenuemargin","revenueother","revenuetruck"]}],
+	  		"count":[{"form":3,"names":["revenuebarge","revenuehandling","revenueinlandtruck","revenuemargin","revenueother","revenuetruck","revenuestorage","revenuebaf"]}],
 	  		"split":[{"form":6,"names":["bargeteusin","bargeteusout","truckteusin","truckteusout","trainteusin","trainteusout"]}]}
 	  	]}
   	};
